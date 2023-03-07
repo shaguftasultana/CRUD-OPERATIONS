@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Button,
   Box,
@@ -13,22 +13,18 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup"
-import * as Yup from "yup";
+import { validationSchema, generateRandomId } from "./utilities";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { MyContext } from "./MyContext";
 
-const AddEdit = () => {
-  const validationSchema=Yup.object().shape({
-    productname:Yup.string().required("Name is required").min(5,"At Least 5 characters are required"),
-    price:Yup.number().typeError("Price is required and must be in Numbers").required("Price is required"),
-    expiryDate:Yup.date().typeError("Expiray Date is required").required("Expiry date is required"),
-    manufacturedDate:Yup.date().typeError("manufactured date is required").required("manufactured date is required"),
-    description:Yup.string().required("description is required"),
-    // image:Yup.mixed().required().test("fileType", "Image is required and file type must be an image", (value) => {
-    //   return (
-    //     value.length && ["image/jpeg", "image/png"].includes(value[0].type)
-    //   );
-    // }),
-    category:Yup.string().required("category is required"),
-    });
+
+
+
+const AddEdit = ({previousData}) => {
+const router =useRouter(); 
+const { state, dispatch } = useContext(MyContext);
+
   const {
     register,
     handleSubmit,
@@ -36,19 +32,29 @@ const AddEdit = () => {
     reset,
     formState: { errors },
   } = useForm(
-   { resolver:yupResolver(validationSchema)
+   { resolver:yupResolver(validationSchema), 
+    defaultValues :previousData?previousData:{}
     }
   );
-  const onSubmit = (data) => {
-    console.log(data);
-    reset();
-  };
-
+  const { dataToEdit } = state;
  
+
+  const onSubmit = (value) => {
+    const data = {
+        ...value,
+       id: generateRandomId()
+    }
+    axios.post("/api/FormData", data).then((response) => {
+      console.log(response.status, response.data.token);
+    });
+    
+    reset();
+    router.push('../components/TableData');
+  };
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3} justifyContent="center" margin="4px">
+        <Grid container spacing={3} justifyContent="center" sx={{width:'70%',margin:'auto',marginTop:'4rem'}} >
           <Paper
             sx={{ padding: "20px", border: "2px solid black", width: "800px" }}
           >
@@ -75,6 +81,8 @@ const AddEdit = () => {
                 variant="filled"
                 name="productname"
                 {...register("productname")}
+               
+                defaultValue={dataToEdit?.productname}
               />
                {errors.productname && <p style={{ color: "red" }}>{errors.productname.message}</p>}
             </Grid>
@@ -106,6 +114,7 @@ const AddEdit = () => {
                 variant="filled"
                 name="description"
                 {...register("description")}
+                defaultValue={dataToEdit?.description} 
               />{errors.description && <p style={{ color: "red" }}>{errors.description.message}</p>}
             </Grid>
             <Grid item padding="2px">
@@ -120,6 +129,7 @@ const AddEdit = () => {
                 variant="filled"
                 name="price"
                 {...register("price")}
+                defaultValue={dataToEdit?.price}
               />{errors.price && <p style={{ color: "red" }}>{errors.price.message}</p>}
             </Grid>
             <Grid item padding="2px">
@@ -133,19 +143,21 @@ const AddEdit = () => {
                 variant="filled"
                 name="manufacturedDate"
                 {...register("manufacturedDate")}
+                defaultValue={dataToEdit?.manufacturedDate}
               />{errors.manufacturedDate && <p style={{ color: "red" }}>{errors.manufacturedDate.message}</p>}
             </Grid>
             <Grid item padding="2px">
               <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
-                Expiray Date
+                Expiry Date
               </InputLabel>
               <TextField
-                fullWidth
-                type="date" 
+                fullWidth 
+                type="date"
                 size="small"
                 variant="filled"
                 name="expiryDate"
                 {...register("expiryDate")}
+                defaultValue={dataToEdit?.expiryDate}
               />{errors.expiryDate && <p style={{ color: "red" }}>{errors.expiryDate.message}</p>}
             </Grid>
             <Grid item padding="2px">
@@ -158,9 +170,10 @@ const AddEdit = () => {
                 <Controller
                   name="category"
                   control={control}
-                  defaultValue=""
+                  defaultValue={dataToEdit?.category}
                   render={({ field: { onChange, value } }) => (
-                    <RadioGroup row value={value} onChange={onChange}>
+                    <RadioGroup row value={value} onChange={onChange}
+              >
                       <FormControlLabel
                         value="1"
                         control={<Radio color="default" size="small" />}
@@ -177,6 +190,7 @@ const AddEdit = () => {
                         label="Category 3"
                       />
                     </RadioGroup>
+                    
                   )}
                 />{errors.category && <p style={{ color: "red" }}>{errors.category.message}</p>}
               </Grid>

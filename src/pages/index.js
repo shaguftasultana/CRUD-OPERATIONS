@@ -1,14 +1,14 @@
 import React from 'react'
-import AddEdit from './components/AddEdit'
 import Head from 'next/head'
+import Layout from './components/Layout'
 
 const index = () => {
   return (
     <>
-    <Head>
+    <Head >
       <title>Add/Edit Form for Products</title>
     </Head>
-      <AddEdit/>
+    <Layout/>
     </>
   )
 }
