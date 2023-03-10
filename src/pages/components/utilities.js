@@ -12,6 +12,20 @@ function generateRandomId() {
 
   return id;
 }
+// convert date to structured format data using formData API.
+const formDataFormat = (data, id) => {
+  const form = new FormData();
+  form.append("id", id);
+  form.append("productname", data.productname);
+  form.append("price", data.price);
+  form.append("description", data.description);
+  form.append("manufacturedDate", data.manufacturedDate);
+  form.append("expiryDate", data.expiryDate);
+  form.append("category", data.category);
+  form.append("checkbox", data.checkbox);
+  form.append("image", data.image[0]);
+  return form;
+};
 
 const dateString = "2023-03-01T19:00:00.000Z";
 const dateObject = new Date(dateString);
@@ -23,18 +37,23 @@ const validationSchema = Yup.object().shape({
   price: Yup.number()
     .typeError("Price is required and must be in numbers")
     .required("Price is required"),
-  expiryDate: Yup.date()
+  expiryDate: Yup.string()
+  .typeError("enter a valid date")
     .required("Expiry date is required"),
-  manufacturedDate: Yup.date()
-    .min(dateObject, "Manufactured date must be after or equal to today")
+  manufacturedDate: Yup.string()
     .required("Manufactured date is required"),
   description: Yup.string().required("Description is required"),
-  // image:Yup.mixed().required().test("fileType", "Image is required and file type must be an image", (value) => {
-  //   return (
-  //     value.length && ["image/jpeg", "image/png"].includes(value[0].type)
-  //   );
-  // }),
+  image:Yup
+  .mixed()
+  .required("Please upload an image")
+  .test("fileType", "Unsupported file type", (value) => {
+    return (
+      value.length && ["image/jpeg", "image/png"].includes(value[0].type)
+    );
+  }),
   category: Yup.string().required("Category is required"),
+  checkbox: Yup.boolean().oneOf([true], 'Please agree to the terms and conditions'),
+
 });
 
-export { generateRandomId, validationSchema };
+export { generateRandomId, validationSchema, formDataFormat };

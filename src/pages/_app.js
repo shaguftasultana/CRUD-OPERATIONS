@@ -8,9 +8,9 @@ export default function App({ Component, pageProps }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
     const getData = async () => {
-      const res = await axios.get("http://localhost:3000/api/FormData/");
+      const res = await axios.get("http://localhost:3000/api/v1/");
       const {data}=res
-      dispatch({type: "ADD_DATA", payload:data.data[0]})
+      dispatch({type: "ADD_DATA", payload:data.data})
     };
     getData();
   }, []);

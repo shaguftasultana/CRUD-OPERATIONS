@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import {
   Button,
   Box,
@@ -9,52 +9,79 @@ import {
   Grid,
   TextField,
   InputLabel,
-  Paper
+  Paper,
+  FormGroup,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup"
+import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchema, generateRandomId } from "./utilities";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { MyContext } from "./MyContext";
+import { Checkbox } from "@mui/material";
+import { useState } from "react";
+import {formDataFormat} from "./utilities"
 
 
 
-
-const AddEdit = ({previousData}) => {
-const router =useRouter(); 
-const { state, dispatch } = useContext(MyContext);
+const AddEdit = ({ previousData }) => {
+  const router = useRouter();
+  const { state, dispatch } = useContext(MyContext);
+  const [submitMessage, setSubmitMessage] = useState("");
 
   const {
     register,
     handleSubmit,
     control,
     reset,
+    watch,
     formState: { errors },
-  } = useForm(
-   { resolver:yupResolver(validationSchema), 
-    defaultValues :previousData?previousData:{}
-    }
-  );
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: state.dataToEdit ? state.dataToEdit : {},
+  });
   const { dataToEdit } = state;
- 
 
   const onSubmit = (value) => {
-    const data = {
+
+    if (dataToEdit?.id) {
+      const formData = formDataFormat(value, dataToEdit.id);
+      axios
+        .patch("/api/v1", formData)
+        .then((response) => {
+          dispatch({ type: "UPADATE_DATA", payload: response.data.data });
+        });
+
+        dispatch({ 
+          type: "EDIT_DATA",
+          payload: '' ,
+        });
+    } else {
+      const data = {
         ...value,
-       id: generateRandomId()
+        id: generateRandomId(),
+      };
+      const formData = formDataFormat(data, generateRandomId());
+      axios.post("/api/v1", formData).then((response) => {
+        dispatch({ type: "UPADATE_DATA", payload: response.data.data });
+      });
     }
-    axios.post("/api/FormData", data).then((response) => {
-      console.log(response.status, response.data.token);
-    });
-    
+  
     reset();
-    router.push('../components/TableData');
+    setSubmitMessage("Form submitted successfully!");
+    router.push("../components/TableData");
   };
+  
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3} justifyContent="center" sx={{width:'70%',margin:'auto',marginTop:'4rem'}} >
+        <Grid
+          container
+          spacing={3}
+          justifyContent="center"
+          sx={{ width: "70%", margin: "auto", marginTop: "4rem" }}
+        >
           <Paper
             sx={{ padding: "20px", border: "2px solid black", width: "800px" }}
           >
@@ -75,37 +102,39 @@ const { state, dispatch } = useContext(MyContext);
               </InputLabel>
               <TextField
                 size="small"
-                fullWidth
+
+    
                 id="Name Required"
                 label="Enter Product Name"
                 variant="filled"
                 name="productname"
                 {...register("productname")}
-               
-                defaultValue={dataToEdit?.productname}
+                 fullWidth
               />
-               {errors.productname && <p style={{ color: "red" }}>{errors.productname.message}</p>}
+              {errors.productname && (
+                <p style={{ color: "red" }}>{errors.productname.message}</p>
+              )}
             </Grid>
-            {/* <Grid item padding="2px">
+            <Grid item padding="2px">
               <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
                 Product Image
               </InputLabel>
-              <Button size="small" variant="filled" >
-                <input
-                  type="file"
-                  name="image"
-                  {...register("image")}
-                  
+              <Button size="small" variant="filled">
+                <input type="file" name="image" {...register("image")}
+                  fullWidth
+                //  defaultValue={dataToEdit?.image} 
                 />
-              </Button>{errors.image && <p style={{ color: "red" }}>{errors.image.message}</p>}
-              
-            </Grid> */}
+              </Button>
+              {errors.image && (
+                <p style={{ color: "red" }}>{errors.image.message}</p>
+              )}
+            </Grid>
             <Grid item padding="2px">
               <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
                 Description
               </InputLabel>
               <TextField
-                fullWidth
+          
                 id="filled-multiline-flexible"
                 label="Product Details"
                 size="small"
@@ -114,8 +143,11 @@ const { state, dispatch } = useContext(MyContext);
                 variant="filled"
                 name="description"
                 {...register("description")}
-                defaultValue={dataToEdit?.description} 
-              />{errors.description && <p style={{ color: "red" }}>{errors.description.message}</p>}
+                 fullWidth
+              />
+              {errors.description && (
+                <p style={{ color: "red" }}>{errors.description.message}</p>
+              )}
             </Grid>
             <Grid item padding="2px">
               <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
@@ -129,36 +161,46 @@ const { state, dispatch } = useContext(MyContext);
                 variant="filled"
                 name="price"
                 {...register("price")}
-                defaultValue={dataToEdit?.price}
-              />{errors.price && <p style={{ color: "red" }}>{errors.price.message}</p>}
+                
+              />
+              {errors.price && (
+                <p style={{ color: "red" }}>{errors.price.message}</p>
+              )}
             </Grid>
             <Grid item padding="2px">
               <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
                 Manufactured Date
               </InputLabel>
               <TextField
-                fullWidth
+            
                 type="date"
                 size="small"
                 variant="filled"
                 name="manufacturedDate"
                 {...register("manufacturedDate")}
-                defaultValue={dataToEdit?.manufacturedDate}
-              />{errors.manufacturedDate && <p style={{ color: "red" }}>{errors.manufacturedDate.message}</p>}
+                 fullWidth
+              />
+              {errors.manufacturedDate && (
+                <p style={{ color: "red" }}>
+                  {errors.manufacturedDate.message}
+                </p>
+              )}
             </Grid>
             <Grid item padding="2px">
               <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
                 Expiry Date
               </InputLabel>
               <TextField
-                fullWidth 
                 type="date"
                 size="small"
                 variant="filled"
                 name="expiryDate"
                 {...register("expiryDate")}
-                defaultValue={dataToEdit?.expiryDate}
-              />{errors.expiryDate && <p style={{ color: "red" }}>{errors.expiryDate.message}</p>}
+                 fullWidth
+              />
+              {errors.expiryDate && (
+                <p style={{ color: "red" }}>{errors.expiryDate.message}</p>
+              )}
             </Grid>
             <Grid item padding="2px">
               <Grid item>
@@ -170,10 +212,9 @@ const { state, dispatch } = useContext(MyContext);
                 <Controller
                   name="category"
                   control={control}
-                  defaultValue={dataToEdit?.category}
+                   fullWidth
                   render={({ field: { onChange, value } }) => (
-                    <RadioGroup row value={value} onChange={onChange}
-              >
+                    <RadioGroup row value={value} onChange={onChange}>
                       <FormControlLabel
                         value="1"
                         control={<Radio color="default" size="small" />}
@@ -190,18 +231,36 @@ const { state, dispatch } = useContext(MyContext);
                         label="Category 3"
                       />
                     </RadioGroup>
-                    
                   )}
-                />{errors.category && <p style={{ color: "red" }}>{errors.category.message}</p>}
+                />
+                {errors.category && (
+                  <p style={{ color: "red" }}>{errors.category.message}</p>
+                )}
+              </Grid>
+              <Grid item padding="2px">
+                 <FormGroup>
+                 <FormControlLabel
+                    size="small"
+                    variant="filled"
+                   name="checkbox"
+                    control={<Checkbox  color="default" size="small" />}
+                    label="All information related to product are correctly checked"
+                     {...register("checkbox")}
+                    fullWidth
+                     //  defaultValue={dataToEdit?.checkbox}
+                  />{errors.checkbox && (
+                    <p style={{ color: "red" }}>{errors.checkbox.message}</p>
+                  )}
+                </FormGroup> 
               </Grid>
             </Grid>
 
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
               <Button
                 type="submit"
                 variant="filled"
                 color="dark"
-                sx={{
+                  sx={{
                   border: "2px solid black",
                   height: "5%",
                   margin: "5px",
@@ -216,6 +275,7 @@ const { state, dispatch } = useContext(MyContext);
             </Box>
           </Paper>
         </Grid>
+        {submitMessage && <p>{submitMessage}</p>}
       </form>
     </>
   );
