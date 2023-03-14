@@ -19,6 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { MyContext } from "./MyContext";
 import { useRouter } from "next/router";
 import Layout from "./Layout";
+import Image from "next/image";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,7 +49,8 @@ function createData(
   manufacturedDate,
   expiryDate,
   category,
-  checkbox
+  checkbox, 
+  dropdown
 ) {
   return {
     id,
@@ -59,7 +61,8 @@ function createData(
     manufacturedDate,
     expiryDate,
     category,
-    checkbox
+    checkbox,
+    dropdown
   };
 }
 
@@ -68,27 +71,29 @@ export default function TableData() {
   const { state, dispatch } = useContext(MyContext);
   const [rows, setRows] = useState([]);
 
-  const handleUpdate = (id) => {   
-    const selectedRow = state.allData.find((row) => row.id === id); 
-    dispatch({ 
+  const handleUpdate = (id) => {
+    const shouldUpdate = window.confirm('Are you sure you want to Update?');
+    if(shouldUpdate){
+    const selectedRow = state.allData.find((row) => row.id === id);
+    dispatch({
       type: "EDIT_DATA",
-      payload: selectedRow ,
+      payload: selectedRow,
     });
-
     router.push("/components/Layout");
-    
-  };
+  };}
   const handleAdd = () => {
+    const shouldAdd = window.confirm('Are you sure you want to add new record?');
+    if(shouldAdd){
     dispatch({ type: "ADD_DATA" });
     router.push({
       pathname: "/components/Layout",
     });
-  };
+  };}
   const deleteItems = async (str, id) => {
     const form = new FormData();
-    form.append('id',id.id);
+    form.append("id", id.id);
 
-      try {
+    try {
       const data = await axios({
         method: "Delete",
         url: str,
@@ -101,13 +106,17 @@ export default function TableData() {
     }
   };
 
-  const handleDelete = async (id) => { 
-     await deleteItems("http://localhost:3000/api/v1", {
-      id: id,
-    });
-    dispatch({ type: "REMOVE_DATA", payload: id });
+  const handleDelete = async (id) => {
+    const shouldDelete = window.confirm('Are you sure you want to delete?');
+    
+    if (shouldDelete) {
+      await deleteItems("http://localhost:3000/api/v1", {
+        id: id,
+      });
+      dispatch({ type: "REMOVE_DATA", payload: id });
+    }
   };
-
+  
 
   return (
     <>
@@ -115,24 +124,19 @@ export default function TableData() {
         <Grid item sx={{ position: "absolue", Top: "0", width: "100%" }}>
           <Header />
         </Grid>
-        {/* <Grid item margin="2%" marginTop="3%" marginLeft="65%" xs={12} sm={6}> */}
-          {/* <Link href="/components/Layout" > */}
-          <Button
-         
-            variant="contained"
-            style={{
-              backgroundColor: "black",
-              color: "white",
-              marginLeft: "70%",
-              marginTop: "1%",
-            }}
-            disableElevation
-            onClick={handleAdd}
-          >
-            Add New Record
-          </Button>
-          {/* </Link> */}
-        {/* </Grid> */}
+        <Button
+          variant="contained"
+          style={{
+            backgroundColor: "black",
+            color: "white",
+            marginLeft: "85%",
+            marginTop: "1%",
+          }}
+          disableElevation
+          onClick={handleAdd}
+        >
+          Add New Record
+        </Button>
         <Grid container>
           <TableContainer
             component={Paper}
@@ -142,7 +146,7 @@ export default function TableData() {
               <TableHead>
                 <TableRow>
                   <StyledTableCell>Product Name</StyledTableCell>
-                  <StyledTableCell align="center">Product Image</StyledTableCell>
+                  
                   <StyledTableCell align="center">Description</StyledTableCell>
                   <StyledTableCell align="center">Price</StyledTableCell>
                   <StyledTableCell align="center">
@@ -150,6 +154,12 @@ export default function TableData() {
                   </StyledTableCell>
                   <StyledTableCell align="center">Expiray Date</StyledTableCell>
                   <StyledTableCell align="center">Category</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Product Image
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    Product Quantity
+                  </StyledTableCell>
                   <StyledTableCell align="center">Confirmation</StyledTableCell>
                   <StyledTableCell align="center" colSpan={2}>
                     Actions
@@ -162,9 +172,7 @@ export default function TableData() {
                     <StyledTableCell component="th" scope="row">
                       {row?.productname}
                     </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {row?.image}
-                    </StyledTableCell>
+                   
                     <StyledTableCell align="center">
                       {row?.description}
                     </StyledTableCell>
@@ -180,12 +188,23 @@ export default function TableData() {
                     <StyledTableCell align="center">
                       {row?.category}
                     </StyledTableCell>
+                    <StyledTableCell align="center" size="small">
+                      <Image
+                        src={`/images/${row.image}`}
+                        alt="product"
+                        width={40}
+                        height={40}
+                      />
+                    </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row?.checkbox? "TRUE": "FALSE"} 
+                      {row?.dropdown}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row?.checkbox }
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <Button
-                        style={{ color: "Red" }}
+                        style={{ color: "Red" , marginLeft: "60%"}}
                         onClick={() => handleDelete(row?.id)}
                       >
                         <DeleteForever />
@@ -193,7 +212,7 @@ export default function TableData() {
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <Button
-                        style={{ color: "green" }}
+                        style={{ color: "green",marginRight: "10%"}}
                         onClick={() => {
                           handleUpdate(row?.id);
                         }}
@@ -211,9 +230,9 @@ export default function TableData() {
           <Grid
             item
             xs={12}
-           position="fixed"
+            position="fixed"
             width="100%"
-           marginTop="100%"
+            marginTop="100%"
             bottom="0"
           >
             <Footer />

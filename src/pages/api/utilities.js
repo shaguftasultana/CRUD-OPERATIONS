@@ -42,7 +42,7 @@ const getData = (req, res) => {
   });
 };
 
-const deleteData = (req, res) => { 
+const deleteData = (req, res) => {
   const previousData = JSON.parse(fs.readFileSync("public/data.json", "utf8"));
   const newData = previousData.filter((item) => item.id !== req.body.id);
 
@@ -60,6 +60,7 @@ const deleteData = (req, res) => {
 const updateData = (req, res) => {
   const previousData = JSON.parse(fs.readFileSync("public/data.json", "utf8"));
   let updatedData = [];
+
   previousData.forEach((elem, value) => {
     if (elem.id == req.body.id) {
       updatedData.push(req.body);

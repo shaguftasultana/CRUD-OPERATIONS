@@ -11,23 +11,23 @@ import {
   InputLabel,
   Paper,
   FormGroup,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { validationSchema, generateRandomId } from "./utilities";
+import { validationSchemaForm, generateRandomId } from "./utilities";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { MyContext } from "./MyContext";
 import { Checkbox } from "@mui/material";
 import { useState } from "react";
-import {formDataFormat} from "./utilities"
-
-
+import { formDataFormat } from "./utilities";
 
 const AddEdit = ({ previousData }) => {
   const router = useRouter();
   const { state, dispatch } = useContext(MyContext);
-  const [submitMessage, setSubmitMessage] = useState("");
 
   const {
     register,
@@ -37,25 +37,24 @@ const AddEdit = ({ previousData }) => {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(state.dataToEdit ? validationSchemaForm(true) : validationSchemaForm(false)),
     defaultValues: state.dataToEdit ? state.dataToEdit : {},
   });
+ 
   const { dataToEdit } = state;
+  console.log(dataToEdit);
 
   const onSubmit = (value) => {
-
     if (dataToEdit?.id) {
       const formData = formDataFormat(value, dataToEdit.id);
-      axios
-        .patch("/api/v1", formData)
-        .then((response) => {
-          dispatch({ type: "UPADATE_DATA", payload: response.data.data });
-        });
+      axios.patch("/api/v1", formData).then((response) => {
+        dispatch({ type: "UPADATE_DATA", payload: response.data.data });
+      });
 
-        dispatch({ 
-          type: "EDIT_DATA",
-          payload: '' ,
-        });
+      dispatch({
+        type: "EDIT_DATA",
+        payload: "",
+      });
     } else {
       const data = {
         ...value,
@@ -66,12 +65,15 @@ const AddEdit = ({ previousData }) => {
         dispatch({ type: "UPADATE_DATA", payload: response.data.data });
       });
     }
-  
+
     reset();
-    setSubmitMessage("Form submitted successfully!");
     router.push("../components/TableData");
   };
-  
+  const onCancel = () => {
+    reset(); // Reset the form to its default (empty) values
+    router.push("/components/Layout"); // Navigate to the new form layout page
+  };
+
 
   return (
     <>
@@ -83,7 +85,11 @@ const AddEdit = ({ previousData }) => {
           sx={{ width: "70%", margin: "auto", marginTop: "4rem" }}
         >
           <Paper
-            sx={{ padding: "20px", border: "2px solid black", width: "800px" }}
+            sx={{
+              padding: "3px 20px",
+              border: "2px solid black",
+              width: "100%",
+            }}
           >
             <Box
               sx={{
@@ -92,129 +98,213 @@ const AddEdit = ({ previousData }) => {
                 justifyContent: "center",
               }}
             >
-              <Typography variant="h4" fontWeight="bold">
+              <Typography variant="h4" fontWeight="bold" padding="2%">
                 INPUT FORM
               </Typography>
             </Box>
-            <Grid item padding="2px">
-              <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
-                Name
-              </InputLabel>
-              <TextField
-                size="small"
-
-    
-                id="Name Required"
-                label="Enter Product Name"
-                variant="filled"
-                name="productname"
-                {...register("productname")}
-                 fullWidth
-              />
-              {errors.productname && (
-                <p style={{ color: "red" }}>{errors.productname.message}</p>
-              )}
-            </Grid>
-            <Grid item padding="2px">
-              <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
-                Product Image
-              </InputLabel>
-              <Button size="small" variant="filled">
-                <input type="file" name="image" {...register("image")}
-                  fullWidth
-                //  defaultValue={dataToEdit?.image} 
-                />
-              </Button>
-              {errors.image && (
-                <p style={{ color: "red" }}>{errors.image.message}</p>
-              )}
-            </Grid>
-            <Grid item padding="2px">
-              <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
-                Description
-              </InputLabel>
-              <TextField
-          
-                id="filled-multiline-flexible"
-                label="Product Details"
-                size="small"
-                multiline
-                maxRows={4}
-                variant="filled"
-                name="description"
-                {...register("description")}
-                 fullWidth
-              />
-              {errors.description && (
-                <p style={{ color: "red" }}>{errors.description.message}</p>
-              )}
-            </Grid>
-            <Grid item padding="2px">
-              <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
-                Price
-              </InputLabel>
-              <TextField
-                fullWidth
-                id="Price Required"
-                label="Product Price In Rupees"
-                size="small"
-                variant="filled"
-                name="price"
-                {...register("price")}
-                
-              />
-              {errors.price && (
-                <p style={{ color: "red" }}>{errors.price.message}</p>
-              )}
-            </Grid>
-            <Grid item padding="2px">
-              <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
-                Manufactured Date
-              </InputLabel>
-              <TextField
-            
-                type="date"
-                size="small"
-                variant="filled"
-                name="manufacturedDate"
-                {...register("manufacturedDate")}
-                 fullWidth
-              />
-              {errors.manufacturedDate && (
-                <p style={{ color: "red" }}>
-                  {errors.manufacturedDate.message}
-                </p>
-              )}
-            </Grid>
-            <Grid item padding="2px">
-              <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
-                Expiry Date
-              </InputLabel>
-              <TextField
-                type="date"
-                size="small"
-                variant="filled"
-                name="expiryDate"
-                {...register("expiryDate")}
-                 fullWidth
-              />
-              {errors.expiryDate && (
-                <p style={{ color: "red" }}>{errors.expiryDate.message}</p>
-              )}
-            </Grid>
-            <Grid item padding="2px">
-              <Grid item>
-                <InputLabel sx={{ color: "black", fontWeight: "bold" }}>
-                  Category
+            <Grid container spacing={4}>
+              <Grid item xs={2}>
+                <InputLabel
+                  sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
+                >
+                  Name :
                 </InputLabel>
               </Grid>
-              <Grid item>
+
+              <Grid item xs={10}>
+                <TextField
+                  sx={{ width: "100%" }}
+                  size="small"
+                  id="Name Required"
+                  variant="filled"
+                  name="productname"
+                  {...register("productname")}
+                />
+              </Grid>
+              <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
+                &nbsp;
+              </Grid>
+              <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
+                {errors.productname && (
+                  <p
+                    style={{
+                      color: "red",
+                      textAlign: "start",
+                      marginLeft: "15rem !important",
+                    }}
+                  >
+                    {errors.productname.message}
+                  </p>
+                )}
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={4}>
+              <Grid item xs={2}>
+                <InputLabel
+                  sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
+                >
+                  Description:
+                </InputLabel>
+              </Grid>
+              <Grid item xs={10}>
+                <TextField
+                  sx={{ width: "100%" }}
+                  id="filled-multiline-flexible"
+                  size="small"
+                  multiline
+                  maxRows={6}
+                  variant="filled"
+                  name="description"
+                  {...register("description")}
+                />
+              </Grid>
+              <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
+                &nbsp;
+              </Grid>
+              <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
+                {errors.description && (
+                  <p style={{ color: "red" }}>{errors.description.message}</p>
+                )}
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={4}>
+              <Grid item xs={2}>
+                <InputLabel
+                  sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
+                >
+                  Price:
+                </InputLabel>
+              </Grid>
+              <Grid item xs={10}>
+                <TextField
+                  sx={{ width: "100%" }}
+                  id="Price Required"
+                  size="small"
+                  variant="filled"
+                  name="price"
+                  {...register("price")}
+                />
+              </Grid>
+              <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
+                &nbsp;
+              </Grid>
+              <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
+                {errors.price && (
+                  <p style={{ color: "red" }}>{errors.price.message}</p>
+                )}
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={4}>
+              <Grid item xs={2}>
+                <InputLabel
+                  sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
+                >
+                  Manufactured
+                  <br /> Date:
+                </InputLabel>
+              </Grid>
+              <Grid item xs={10}>
+                <TextField
+                  sx={{ width: "100%" }}
+                  type="date"
+                  size="small"
+                  variant="filled"
+                  name="manufacturedDate"
+                  {...register("manufacturedDate")}
+                />{" "}
+              </Grid>
+              <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
+                &nbsp;
+              </Grid>
+              <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
+                {errors.manufacturedDate && (
+                  <p style={{ color: "red" }}>
+                    {errors.manufacturedDate.message}
+                  </p>
+                )}
+              </Grid>
+            </Grid>
+            <Grid container spacing={4}>
+              <Grid item xs={2}>
+                <InputLabel
+                  sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
+                >
+                  Expiray Date:
+                </InputLabel>
+              </Grid>
+              <Grid item xs={10}>
+                <TextField
+                  sx={{ width: "100%" }}
+                  type="date"
+                  size="small"
+                  variant="filled"
+                  name="expiryDate"
+                  {...register("expiryDate")}
+                />
+              </Grid>
+              <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
+                &nbsp;
+              </Grid>
+              <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
+                {errors.expiryDate && (
+                  <p style={{ color: "red" }}>{errors.expiryDate.message}</p>
+                )}
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={4}>
+              <Grid item xs={2}>
+                <InputLabel
+                  sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
+                >
+                  Product <br />
+                  Image:
+                </InputLabel>
+              </Grid>
+              <Grid item xs={10}>
+                <Button size="small" variant="filled">
+                  <input
+                    sx={{ width: "100%" }}
+                    type="file"
+                    name="image"
+                    // defaultValue={watch().image?watch().image : undefined }                    
+                    {...register("image")}
+                  />
+                </Button>
+              </Grid>
+              <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
+                &nbsp;
+              </Grid>
+              <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
+                {errors.image && (
+                  <p style={{ color: "red" }}>{errors.image.message}</p>
+                )}
+              </Grid>
+            </Grid>
+            <Grid container spacing={4}>
+              <Grid item xs={2}>
+                <InputLabel
+                  sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
+                >
+                  Category:
+                </InputLabel>
+              </Grid>
+              <Grid item xs={10}>
                 <Controller
+                defaultValue={""}
+                  size="small"
                   name="category"
                   control={control}
-                   fullWidth
                   render={({ field: { onChange, value } }) => (
-                    <RadioGroup row value={value} onChange={onChange}>
+                    <RadioGroup
+                      row
+                      value={value}
+                      onChange={onChange}
+                      sx={{ paddingLeft: "20px" }}
+                    >
                       <FormControlLabel
                         value="1"
                         control={<Radio color="default" size="small" />}
@@ -233,49 +323,138 @@ const AddEdit = ({ previousData }) => {
                     </RadioGroup>
                   )}
                 />
+              </Grid>
+              <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
+                &nbsp;
+              </Grid>
+              <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
                 {errors.category && (
                   <p style={{ color: "red" }}>{errors.category.message}</p>
                 )}
               </Grid>
-              <Grid item padding="2px">
-                 <FormGroup>
-                 <FormControlLabel
-                    size="small"
-                    variant="filled"
-                   name="checkbox"
-                    control={<Checkbox  color="default" size="small" />}
-                    label="All information related to product are correctly checked"
-                     {...register("checkbox")}
-                    fullWidth
-                     //  defaultValue={dataToEdit?.checkbox}
-                  />{errors.checkbox && (
-                    <p style={{ color: "red" }}>{errors.checkbox.message}</p>
+            </Grid>
+            <Grid container spacing={4}>
+              <Grid item xs={2}>
+                <InputLabel
+                  id="demo-select-small"
+                  sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
+                >
+                  Product <br /> Quantity:
+                </InputLabel>
+              </Grid>
+              <Grid item xs={10}>
+                <Controller
+              //  defaultValue={""}
+                  name="dropdown"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                    color="secondary"
+                      onChange={onChange}
+                      value={value || watch().dropdown}
+                      sx={{
+                        width: "100%",
+                        height: "90%",
+                        defaultborder:"none",
+                    
+                      }}
+                    >
+                    
+                      <MenuItem value={10}>Ten</MenuItem>
+                      <MenuItem value={20}>Twenty</MenuItem>
+                      <MenuItem value={30}>Thirty</MenuItem>
+                    </Select>
                   )}
-                </FormGroup> 
+                />
+              </Grid>
+
+              <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
+                &nbsp;
+              </Grid>
+              <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
+                {errors.dropdown && (
+                  <p style={{ color: "red" }}>{errors.dropdown.message}</p>
+                )}
               </Grid>
             </Grid>
 
-            <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-              <Button
-                type="submit"
-                variant="filled"
-                color="dark"
-                  sx={{
-                  border: "2px solid black",
-                  height: "5%",
-                  margin: "5px",
-                  padding: "10px",
-                  width: "200px",
-                  fontSize: "15px",
-                  fontWeight: "bold",
-                }}
-              >
-                ADD RECORD
-              </Button>
-            </Box>
+            <Grid container spacing={5} marginLeft="2%">
+              <Grid item xs={10}>
+                   <Controller
+                    name="checkbox"
+                    variant="filled"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <Grid item sx={{ marginTop: "-.5rem" }}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox color="default"
+                              checked={field.value === "true"}
+                              onChange={(event) =>
+                                field.onChange(
+                                  event.target.checked ? "true" : ""
+                                )
+                              }
+                            />
+                          }
+                          label="All information related to product are correctly checked"
+                        />
+                      </Grid>
+                    )}
+                  />
+                  <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
+                &nbsp;
+              </Grid>
+              <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
+                {errors.checkbox && (
+                  <p style={{ color: "red" }}>{errors.checkbox.message}</p>
+                )}
+              </Grid>
+              </Grid>
+            </Grid>
+
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+  <Box>
+    <Button
+      type="submit"
+      variant="filled"
+      color="dark"
+      sx={{
+        border: "2px solid black",
+        height: "5%",
+        margin: "10px",
+        padding: "15px",
+        width: "200px",
+        fontSize: "15px",
+        fontWeight: "bold",
+      }}
+    >
+      ADD RECORD
+    </Button>
+  </Box>
+  <Box>
+    <Button
+      onClick={onCancel}
+      variant="filled"
+      color="dark"
+      sx={{
+        border: "2px solid black",
+        height: "5%",
+        margin: "10px",
+        padding: "15px",
+        width: "200px",
+        fontSize: "15px",
+        fontWeight: "bold",
+      }}
+    >
+      Cancel
+    </Button>
+  </Box>
+</Box>
+
           </Paper>
         </Grid>
-        {submitMessage && <p>{submitMessage}</p>}
       </form>
     </>
   );

@@ -4,8 +4,7 @@ import React, { createContext, useReducer } from "react";
 const initialState = {
   show: "",
   allData: [],
-};
-
+}
 const MyContext = createContext(initialState);
 
 const reducer = (state, action) => {

@@ -23,6 +23,7 @@ handler.use(upload.single("image"));
 handler.post((req, res) => writeData(req, res));
 
 // update request api
+
 handler.patch((req, res) => updateData(req, res));
 
 // delete request api
