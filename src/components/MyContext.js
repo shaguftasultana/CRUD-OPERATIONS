@@ -22,7 +22,6 @@ const reducer = (state, action) => {
     case "EDIT_DATA":
       return {
         ...state,
-        show: " ",
         dataToEdit: action.payload ,
       };
     case "UPADATE_DATA":
@@ -38,6 +37,9 @@ const reducer = (state, action) => {
         ...state,
         allData: filteredData,
       };
+     
+      
+      
     default:
       return state;
   }

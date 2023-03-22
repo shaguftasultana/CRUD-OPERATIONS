@@ -17,13 +17,13 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { validationSchemaForm, generateRandomId } from "./utilities";
+import { validationSchemaForm, generateRandomId } from "../utilities";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { MyContext } from "./MyContext";
+import { MyContext } from "../MyContext";
 import { Checkbox } from "@mui/material";
 import { useState } from "react";
-import { formDataFormat } from "./utilities";
+import { formDataFormat } from "../utilities";
 
 const AddEdit = ({ previousData }) => {
   const router = useRouter();
@@ -37,10 +37,14 @@ const AddEdit = ({ previousData }) => {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(state.dataToEdit ? validationSchemaForm(true) : validationSchemaForm(false)),
+    resolver: yupResolver(
+      state.dataToEdit
+        ? validationSchemaForm(true)
+        : validationSchemaForm(false)
+    ),
     defaultValues: state.dataToEdit ? state.dataToEdit : {},
   });
- 
+
   const { dataToEdit } = state;
   console.log(dataToEdit);
 
@@ -64,16 +68,22 @@ const AddEdit = ({ previousData }) => {
       axios.post("/api/v1", formData).then((response) => {
         dispatch({ type: "UPADATE_DATA", payload: response.data.data });
       });
+      dispatch({
+        type: "EDIT_DATA",
+        payload: "",
+      });
     }
 
     reset();
-    router.push("../components/TableData");
+    router.push("/");
   };
   const onCancel = () => {
-    reset(); // Reset the form to its default (empty) values
-    router.push("/components/Layout"); // Navigate to the new form layout page
+    dispatch({
+      type: "EDIT_DATA",
+      payload: "",
+    });
+    router.push("/"); // Navigate to the new form layout page
   };
-
 
   return (
     <>
@@ -270,7 +280,7 @@ const AddEdit = ({ previousData }) => {
                     sx={{ width: "100%" }}
                     type="file"
                     name="image"
-                    // defaultValue={watch().image?watch().image : undefined }                    
+                    // defaultValue={watch().image?watch().image : undefined }
                     {...register("image")}
                   />
                 </Button>
@@ -294,7 +304,7 @@ const AddEdit = ({ previousData }) => {
               </Grid>
               <Grid item xs={10}>
                 <Controller
-                defaultValue={""}
+                  defaultValue={""}
                   size="small"
                   name="category"
                   control={control}
@@ -344,22 +354,20 @@ const AddEdit = ({ previousData }) => {
               </Grid>
               <Grid item xs={10}>
                 <Controller
-              //  defaultValue={""}
+                  //  defaultValue={""}
                   name="dropdown"
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <Select
-                    color="secondary"
+                      color="secondary"
                       onChange={onChange}
                       value={value || watch().dropdown}
                       sx={{
                         width: "100%",
                         height: "90%",
-                        defaultborder:"none",
-                    
+                        defaultborder: "none",
                       }}
                     >
-                    
                       <MenuItem value={10}>Ten</MenuItem>
                       <MenuItem value={20}>Twenty</MenuItem>
                       <MenuItem value={30}>Thirty</MenuItem>
@@ -380,79 +388,77 @@ const AddEdit = ({ previousData }) => {
 
             <Grid container spacing={5} marginLeft="2%">
               <Grid item xs={10}>
-                   <Controller
-                    name="checkbox"
-                    variant="filled"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <Grid item sx={{ marginTop: "-.5rem" }}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox color="default"
-                              checked={field.value === "true"}
-                              onChange={(event) =>
-                                field.onChange(
-                                  event.target.checked ? "true" : ""
-                                )
-                              }
-                            />
-                          }
-                          label="All information related to product are correctly checked"
-                        />
-                      </Grid>
-                    )}
-                  />
-                  <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
-                &nbsp;
-              </Grid>
-              <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
-                {errors.checkbox && (
-                  <p style={{ color: "red" }}>{errors.checkbox.message}</p>
-                )}
-              </Grid>
+                <Controller
+                  name="checkbox"
+                  variant="filled"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <Grid item sx={{ marginTop: "-.5rem" }}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            color="default"
+                            checked={field.value === "true"}
+                            onChange={(event) =>
+                              field.onChange(event.target.checked ? "true" : "")
+                            }
+                          />
+                        }
+                        label="All information related to product are correctly checked"
+                      />
+                    </Grid>
+                  )}
+                />
+                <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
+                  &nbsp;
+                </Grid>
+                <Grid item xs={9} sx={{ m: "0%", p: "0% !important" }}>
+                  {errors.checkbox && (
+                    <p style={{ color: "red" }}>{errors.checkbox.message}</p>
+                  )}
+                </Grid>
               </Grid>
             </Grid>
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-  <Box>
-    <Button
-      type="submit"
-      variant="filled"
-      color="dark"
-      sx={{
-        border: "2px solid black",
-        height: "5%",
-        margin: "10px",
-        padding: "15px",
-        width: "200px",
-        fontSize: "15px",
-        fontWeight: "bold",
-      }}
-    >
-      ADD RECORD
-    </Button>
-  </Box>
-  <Box>
-    <Button
-      onClick={onCancel}
-      variant="filled"
-      color="dark"
-      sx={{
-        border: "2px solid black",
-        height: "5%",
-        margin: "10px",
-        padding: "15px",
-        width: "200px",
-        fontSize: "15px",
-        fontWeight: "bold",
-      }}
-    >
-      Cancel
-    </Button>
-  </Box>
-</Box>
-
+              <Box>
+                <Button
+                  type="submit"
+                  variant="filled"
+                  color="dark"
+                  sx={{
+                    border: "2px solid black",
+                    height: "5%",
+                    margin: "10px",
+                    padding: "15px",
+                    width: "200px",
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  ADD RECORD
+                </Button>
+              </Box>
+              <Box>
+                <Button
+                  onClick={onCancel}
+                  variant="filled"
+                  color="dark"
+                  sx={{
+                    border: "2px solid black",
+                    height: "5%",
+                    margin: "10px",
+                    padding: "15px",
+                    width: "200px",
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Box>
+            </Box>
           </Paper>
         </Grid>
       </form>

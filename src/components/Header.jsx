@@ -6,10 +6,10 @@ import { Box } from "@mui/material";
 
 export default function Header() {
   return (
-    <Box sx={{ width:'100%'}}>
-      <AppBar  position="static" sx={{ bgcolor: "#333333" , width:'100%'}}>
+    <Box sx={{ width:'100%',backgroundColor:"black"}}>
+      <AppBar  position="static" color="black"  sx={{   width:'100%'}}>
         <Toolbar>
-          <Typography variant="h4" >
+          <Typography variant="h4" color="white" >
             Task 1
           </Typography>
         </Toolbar>

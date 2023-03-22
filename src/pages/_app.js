@@ -2,7 +2,7 @@
 import "@/styles/globals.css";
 import axios from "axios";
 import { useEffect, useReducer } from "react";
-import { MyContext, initialState, reducer } from "./components/MyContext";
+import { MyContext, initialState, reducer } from "../components/MyContext";
 import { createTheme, ThemeProvider } from "@mui/material";
 
 const theme = createTheme({
@@ -18,6 +18,9 @@ const theme = createTheme({
     },
     success: {
       main: "#2cc50f",
+    },
+    black:{
+      main:"#000",
     },
   },
 });

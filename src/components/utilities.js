@@ -1,6 +1,6 @@
 import * as Yup from "yup";
-
 function generateRandomId() {
+
   const idLength = Math.floor(Math.random() * 20) + 1;
   let id = "";
   const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -12,6 +12,7 @@ function generateRandomId() {
 
   return id;
 }
+
 // convert date to structured format data using formData API.
 const formDataFormat = (data, id) => {
   const form = new FormData();
@@ -27,6 +28,7 @@ const formDataFormat = (data, id) => {
   form.append("dropdown", data.dropdown);
   return form;
 };
+
 
 function validationSchemaForm(val) {
   if(val){
@@ -70,7 +72,7 @@ function validationSchemaForm(val) {
         .test("fileType", "Unsupported file type", (value) => {
           console.log( value.length );
           return (
-            value.length && ["image/jpeg", "image/png"].includes(value[0].type)
+            value.length && ["image/jpeg", "image/png","image/avif"].includes(value[0].type)
           );
         }) ,
       category: Yup.string().required("Category is required"),
@@ -86,4 +88,4 @@ function validationSchemaForm(val) {
   }
 }
 
-export { generateRandomId, validationSchemaForm, formDataFormat };
+export { generateRandomId,validationSchemaForm, formDataFormat};
