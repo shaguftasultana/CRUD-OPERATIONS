@@ -1,9 +1,10 @@
-import axios from "axios";
-import React, { createContext, useReducer } from "react";
+
+import React, { createContext } from "react";
 
 const initialState = {
   show: "",
   allData: [],
+ 
 }
 const MyContext = createContext(initialState);
 
@@ -25,20 +26,22 @@ const reducer = (state, action) => {
         dataToEdit: action.payload ,
       };
     case "UPADATE_DATA":
+      const data = [state.allData, action.payload]
+
       return {
         ...state,
-        allData: action.payload,
+        allData: data,
       };
     case "REMOVE_DATA":
+      console.log(action.payload);
       const filteredData = state.allData.filter(
-        (data) => data.id !== action.payload
+        (data) => data._id !== action.payload
       );
       return {
         ...state,
         allData: filteredData,
       };
-     
-      
+    
       
     default:
       return state;

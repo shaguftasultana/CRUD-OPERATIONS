@@ -5,19 +5,20 @@ import Typography from "@mui/material/Typography";
 export default function Footer() {
   return (
     <Box
-      sx={{
-        
-        padding : '10px 5px',
-        color: "white",
-        textAlign: "center",
-        bgcolor: "#333333",
-        marginTop: "2em",
-        justifyContent: "center",
-        alignItems: "center",
-       
-      }}
-    >
-      <Typography variant="body1">@all rights are reserved</Typography>
-    </Box>
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "#333333",
+      color: "white",
+      ping: "1rem",
+      marginTop: "2rem",
+    }}
+  >
+    <Typography variant="body1" sx={{ textAlign: "center" }}>
+      All rights reserved &copy; {new Date().getFullYear()}
+    </Typography>
+  </Box>
+  
   );
 }

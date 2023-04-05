@@ -1,22 +1,10 @@
 import * as Yup from "yup";
-function generateRandomId() {
 
-  const idLength = Math.floor(Math.random() * 20) + 1;
-  let id = "";
-  const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
-
-  for (let i = 0; i < idLength; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    id += characters[randomIndex];
-  }
-
-  return id;
-}
-
-// convert date to structured format data using formData API.
-const formDataFormat = (data, id) => {
+const formDataFormat = (data,_id) => {
+  console.log(data,_id);
+if(_id){
   const form = new FormData();
-  form.append("id", id);
+  form.append("_id", _id);
   form.append("productname", data.productname);
   form.append("price", data.price);
   form.append("description", data.description);
@@ -27,6 +15,19 @@ const formDataFormat = (data, id) => {
   form.append("image", data.image[0]);
   form.append("dropdown", data.dropdown);
   return form;
+}else{
+  const form = new FormData();
+  form.append("productname", data.productname);
+  form.append("price", data.price);
+  form.append("description", data.description);
+  form.append("manufacturedDate", data.manufacturedDate);
+  form.append("expiryDate", data.expiryDate);
+  form.append("category", data.category);
+  form.append("checkbox", data.checkbox);
+  form.append("image", data.image[0]);
+  form.append("dropdown", data.dropdown);
+  return form;
+}
 };
 
 
@@ -88,4 +89,4 @@ function validationSchemaForm(val) {
   }
 }
 
-export { generateRandomId,validationSchemaForm, formDataFormat};
+export { validationSchemaForm, formDataFormat};

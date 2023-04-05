@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Button,
   Box,
@@ -25,6 +25,7 @@ import { Checkbox } from "@mui/material";
 import { useState } from "react";
 import { formDataFormat } from "../utilities";
 
+
 const AddEdit = ({ previousData }) => {
   const router = useRouter();
   const { state, dispatch } = useContext(MyContext);
@@ -46,12 +47,13 @@ const AddEdit = ({ previousData }) => {
   });
 
   const { dataToEdit } = state;
-  console.log(dataToEdit);
+
 
   const onSubmit = (value) => {
     if (dataToEdit?.id) {
       const formData = formDataFormat(value, dataToEdit.id);
-      axios.patch("/api/v1", formData).then((response) => {
+      axios.patch("/api/", formData).then((response) => {
+        console.log(response);
         dispatch({ type: "UPADATE_DATA", payload: response.data.data });
       });
 
@@ -60,17 +62,9 @@ const AddEdit = ({ previousData }) => {
         payload: "",
       });
     } else {
-      const data = {
-        ...value,
-        id: generateRandomId(),
-      };
-      const formData = formDataFormat(data, generateRandomId());
-      axios.post("/api/v1", formData).then((response) => {
+      const formData = formDataFormat({  ...value})
+      axios.post("http://localhost:3000/api/v2", formData).then((response) => {
         dispatch({ type: "UPADATE_DATA", payload: response.data.data });
-      });
-      dispatch({
-        type: "EDIT_DATA",
-        payload: "",
       });
     }
 
@@ -421,13 +415,13 @@ const AddEdit = ({ previousData }) => {
               </Grid>
             </Grid>
 
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", justifyContent: "right" }}>
               <Box>
                 <Button
                   type="submit"
                   variant="filled"
-                  color="dark"
                   sx={{
+                    backgroundColor: "success.main",
                     border: "2px solid black",
                     height: "5%",
                     margin: "10px",
@@ -437,15 +431,15 @@ const AddEdit = ({ previousData }) => {
                     fontWeight: "bold",
                   }}
                 >
-                  ADD RECORD
+                  SAVE
                 </Button>
               </Box>
               <Box>
                 <Button
                   onClick={onCancel}
                   variant="filled"
-                  color="dark"
                   sx={{
+                    backgroundColor: "error.main",
                     border: "2px solid black",
                     height: "5%",
                     margin: "10px",

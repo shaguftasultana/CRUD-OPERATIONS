@@ -1,16 +1,18 @@
-const multer = require("multer");
-const path = require("path");
+ import multer, { diskStorage } from "multer";
+ import path from "path";
 
 const upload = multer({
-  storage: multer.diskStorage({
+  storage: diskStorage({
     destination: "./public/images",
     filename: (req, file, cb) => {
       const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
       const ext = file.mimetype.split("/")[1];
-      req.body.image = `${file.fieldname}-${uniqueSuffix}.${ext}`;
-      cb(null, `${file.fieldname}-${uniqueSuffix}.${ext}`);
+      const filename = `${file.fieldname}-${uniqueSuffix}.jpeg`;
+      req.body.image = filename
+      cb(null, filename);
     },
   }),
 });
 
-module.exports = upload;
+export default upload;
+
