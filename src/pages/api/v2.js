@@ -1,7 +1,9 @@
 import nc from "next-connect";
 import "../../lib/mongoDb";
 import upload from "./Multer";
-import Test from "@/Models/Models";
+import Test from "@/pages/api/Models/Models";
+
+
 
 const handler = nc();
 export const config = {
@@ -22,35 +24,17 @@ handler.get(async (req, res) => {
 });
 
 // post request api with images
-handler.use(upload.single("image"));
-handler.post(async (req, res) => {
+handler.post(upload.single("image") ,async (req, res) => {
+  console.log(req.method);
     const data = await Test.create(req.body);
+
+    console.log('data', data);
     res.status(201).json({
         status: "success",
         data,
     });
 });
 
-// update request api
-handler.patch(async (req, res) => {
-    const newData = await Test.findByIdAndUpdate(req.body.id, req.body, {
-        new: true,
-        runValidators: true,
-    });
-    res.status(202).json({
-        status: "OK",
-        data: newData,
-    });
-});
 
-// delete request api
-handler.delete(async(req, res) => {
-    console.log('req body',req.body);
-    // await Test.findByIdAndDelete(req.body.id);
-
-    res.status(200).json({
-        status: "OK",
-    });
-});
 
 export default handler;

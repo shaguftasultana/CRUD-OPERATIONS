@@ -1,11 +1,9 @@
-
 import React, { createContext } from "react";
 
 const initialState = {
   show: "",
   allData: [],
- 
-}
+};
 const MyContext = createContext(initialState);
 
 const reducer = (state, action) => {
@@ -23,14 +21,26 @@ const reducer = (state, action) => {
     case "EDIT_DATA":
       return {
         ...state,
-        dataToEdit: action.payload ,
+        dataToEdit: action.payload,
       };
-    case "UPADATE_DATA":
-      const data = [state.allData, action.payload]
+    // case "UPADATE_DATA":
+    //   const data = [state.allData, action.payload]
 
+    //   return {
+    //     ...state,
+    //     allData: data,
+    //   };
+
+    case "UPADATE_DATA":
+      const updatedData = action.payload;
+      const updatedIndex = state.allData.findIndex(
+        (data) => data.id === updatedData.id
+      );
+      const newData = [...state.allData];
+      newData[updatedIndex] = updatedData;
       return {
         ...state,
-        allData: data,
+        allData: newData,
       };
     case "REMOVE_DATA":
       console.log(action.payload);
@@ -41,8 +51,7 @@ const reducer = (state, action) => {
         ...state,
         allData: filteredData,
       };
-    
-      
+
     default:
       return state;
   }

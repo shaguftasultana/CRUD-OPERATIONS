@@ -50,17 +50,17 @@ const AddEdit = ({ previousData }) => {
 
 
   const onSubmit = (value) => {
-    if (dataToEdit?.id) {
-      const formData = formDataFormat(value, dataToEdit.id);
-      axios.patch("/api/", formData).then((response) => {
-        console.log(response);
+
+    if (value?._id) {
+      
+      axios.patch("http://localhost:3000/api/v1",  { data : value}).then((response) => {
         dispatch({ type: "UPADATE_DATA", payload: response.data.data });
       });
-
       dispatch({
         type: "EDIT_DATA",
         payload: "",
       });
+
     } else {
       const formData = formDataFormat({  ...value})
       axios.post("http://localhost:3000/api/v2", formData).then((response) => {

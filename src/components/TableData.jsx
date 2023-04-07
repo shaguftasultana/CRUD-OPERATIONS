@@ -1,6 +1,4 @@
 import { useState, useContext, useEffect } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
 import Button from "@mui/material/Button";
 import { Box, Grid, Typography } from "@mui/material";
 import { MyContext } from "./MyContext";
@@ -55,9 +53,6 @@ export default function TableData({ handleYes }) {
   return (
     <>
       <Grid container>
-        <Grid item sx={{ position: "absolute", Top: "0", width: "100%" }}>
-          <Header />
-        </Grid>
         {isDelete && (
           <Notifications
             open={isDelete}
@@ -66,8 +61,8 @@ export default function TableData({ handleYes }) {
             removeId={RemoveId}
           />
         )}
-        <Grid container sx={{ marginLeft: "5%", marginTop: "15px" }}>
-          <Grid item xs={2} sx={{ marginLeft: "auto", marginTop: "80px" }}>
+        <Grid container sx={{ marginLeft: "5%"}}>
+          <Grid item xs={2} sx={{ marginLeft: "auto", marginTop: "20px" }}>
             <Button
               variant="contained"
               style={{
@@ -192,19 +187,6 @@ export default function TableData({ handleYes }) {
               ))
             )}
           </Grid>
-        </Grid>
-      </Grid>
-
-      <Grid container>
-        <Grid
-          item
-          xs={12}
-          // position="fixed"
-          width="100%"
-          marginTop="2%"
-          bottom="0% !important"
-        >
-          <Footer />
         </Grid>
       </Grid>
     </>

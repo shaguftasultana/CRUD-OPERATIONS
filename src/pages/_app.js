@@ -1,9 +1,11 @@
 //import '@/styles/globals.css'
 import "@/styles/globals.css";
 import axios from "axios";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer , useState } from "react";
 import { MyContext, initialState, reducer } from "../components/MyContext";
 import { createTheme, ThemeProvider } from "@mui/material";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const theme = createTheme({
   palette: {
@@ -25,6 +27,7 @@ const theme = createTheme({
   },
 });
 
+
 export default function App({ Component, pageProps }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
@@ -34,12 +37,14 @@ export default function App({ Component, pageProps }) {
       
       dispatch({ type: "ADD_DATA", payload: data.data });
     };
-    getData();
+      getData(); 
   }, []);
   return (
     <MyContext.Provider value={{ state, dispatch }}>
       <ThemeProvider theme={theme}>
+        <Header/>
         <Component {...pageProps} />
+        <Footer/>
       </ThemeProvider>
     </MyContext.Provider>
   );
