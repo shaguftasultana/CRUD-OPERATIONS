@@ -24,15 +24,13 @@ handler.get(async (req, res) => {
 });
 
 // post request api with images
-handler.post(upload.single("image") ,async (req, res) => {
-  console.log(req.method);
-    const data = await Test.create(req.body);
+handler.post(upload.single("image"), async (req, res) => {
+  const data = await Test.create(req.body);
 
-    console.log('data', data);
-    res.status(201).json({
-        status: "success",
-        data,
-    });
+  res.status(201).json({
+    status: "success",
+    data,
+  });
 });
 
 

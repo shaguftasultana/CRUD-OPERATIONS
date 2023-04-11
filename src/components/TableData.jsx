@@ -1,5 +1,4 @@
 import { useState, useContext, useEffect } from "react";
-import Button from "@mui/material/Button";
 import { Box, Grid, Typography } from "@mui/material";
 import { MyContext } from "./MyContext";
 import { useRouter } from "next/router";
@@ -14,7 +13,7 @@ import DeleteForever from "@mui/icons-material/DeleteForever";
 import Filter from "./Filter/Filter";
 import Notifications from "./Notifications";
 
-export default function TableData({ handleYes }) {
+export default function TableData({ handleYes, open }) {
   const router = useRouter();
   const { state, dispatch } = useContext(MyContext);
   const [reset, setReset] = useState(true);
@@ -36,20 +35,9 @@ export default function TableData({ handleYes }) {
     });
     router.push("/edit");
   };
-  const handle = () => {
-    const should = window.confirm(
-      "Are you sure you want to   add new record?"
-    );
-    if (should) {
-      router.push({
-        pathname: "/add",
-      });
-    }
-  };
 
   const CloseNotification = () => setIsDelete(false);
   const RemoveId = () => setIsDeleteId(null);
-
   return (
     <>
       <Grid container>
@@ -61,21 +49,7 @@ export default function TableData({ handleYes }) {
             removeId={RemoveId}
           />
         )}
-        <Grid container sx={{ marginLeft: "5%"}}>
-          <Grid item xs={2} sx={{ marginLeft: "auto", marginTop: "20px" }}>
-            <Button
-              variant="contained"
-              style={{
-                backgroundColor: "black",
-                color: "white",
-              }}
-              disableElevation
-              onClick={handle}
-            >
-               New Record
-            </Button>
-          </Grid>
-        </Grid>
+        <Grid container sx={{ marginLeft: "5%" }}></Grid>
         <Grid
           container
           display="flex"

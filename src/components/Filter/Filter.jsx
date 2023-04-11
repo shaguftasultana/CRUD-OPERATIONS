@@ -18,7 +18,6 @@ export default function Filter({ allData, setFilterData, resetState }) {
 
 
   const handleSearch = (event) => {
-    console.log(event);
     const value = event.target.value;
     const data = allData.filter((data) =>
       data.productname.toLowerCase().includes(value.toLowerCase())
@@ -32,13 +31,14 @@ export default function Filter({ allData, setFilterData, resetState }) {
     setFilterData(filteredData);
   };
 
-  const handleSliderChange = (event, newValue) => {console.log(newValue);
+  const handleSliderChange = (event, newValue) => {
     setValue(newValue);
-    const [min , max]=newValue; console.log(allData,min , max)
-    const filteredData = allData.filter((data) => { 
+    const [min, max] = newValue;
+
+    const filteredData = allData.filter((data) => {
       return data.price >= min && data.price <= max;
     });
-    console.log(filteredData)
+
     setFilterData(filteredData);
   };
   

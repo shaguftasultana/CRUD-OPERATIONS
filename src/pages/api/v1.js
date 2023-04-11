@@ -3,13 +3,6 @@ import "../../lib/mongoDb";
 import Test from "@/pages/api/Models/Models";
 
 const handler = nc();
-// export const config = {
-//   api: {
-//     bodyParser: true,
-//   },
-// };
-
-// update request api
 handler.patch(async (req, res) => {
   const { data } = req.body;
 
@@ -25,7 +18,6 @@ handler.patch(async (req, res) => {
 
 // delete request api
 handler.delete("/api/v1", async (req, res) => {
-  console.log(req.body.id);
   const data = await Test.findByIdAndDelete(req.body.id);
 
   res.status(200).json({

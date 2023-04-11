@@ -12,18 +12,17 @@ const Notifications = ({ open, closeNotification, id, removeId }) => {
   const transitionRef = useRef(null);
 
   const closeNotificationPopup = () => {
-    // snackbarRef.current.close();
     closeNotification();
   };
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete("http://localhost:3000/api/v1", { data: { id: id } });
+      const res = await axios.delete("http://localhost:3000/api/v1", {
+        data: { id: id },
+      });
       dispatch({ type: "REMOVE_DATA", payload: id });
       removeId();
       closeNotification();
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (

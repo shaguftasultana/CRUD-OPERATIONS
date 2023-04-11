@@ -3,11 +3,12 @@ import TableData from '../TableData'
 
 
 const HomePage = () => {
+
   return (
     <div>
-     <TableData/>
+      <TableData />
     </div>
-  )
+  );
 }
 
 export default HomePage

@@ -23,13 +23,6 @@ const reducer = (state, action) => {
         ...state,
         dataToEdit: action.payload,
       };
-    // case "UPADATE_DATA":
-    //   const data = [state.allData, action.payload]
-
-    //   return {
-    //     ...state,
-    //     allData: data,
-    //   };
 
     case "UPADATE_DATA":
       const updatedData = action.payload;
@@ -43,7 +36,6 @@ const reducer = (state, action) => {
         allData: newData,
       };
     case "REMOVE_DATA":
-      console.log(action.payload);
       const filteredData = state.allData.filter(
         (data) => data._id !== action.payload
       );
