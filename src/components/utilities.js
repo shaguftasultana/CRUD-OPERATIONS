@@ -89,7 +89,7 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  maxWidth: "90vw",
+  width: "60%",
   maxHeight: "90vh",
   overflowY: "auto",
   bgcolor: "background.paper",
@@ -97,5 +97,6 @@ const modalStyle = {
   borderRadius: "1rem",
   p: 3,
 };
+ 
 
 export { validationSchemaForm, formDataFormat, modalStyle };

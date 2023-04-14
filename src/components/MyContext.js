@@ -1,8 +1,10 @@
 import React, { createContext } from "react";
+import { array } from "yup";
 
 const initialState = {
   show: "",
   allData: [],
+  allLocations: [],
 };
 const MyContext = createContext(initialState);
 
@@ -42,6 +44,30 @@ const reducer = (state, action) => {
       return {
         ...state,
         allData: filteredData,
+      };
+    case "ADD_LOCATION":
+      return {
+        ...state,
+        allLocations: action.payload,
+      };
+    case "UPDATE_LOCATION":
+      return {
+        ...state,
+        allLocations: [...state.allLocations, action.payload],
+      };
+
+    case "DELETE_LOCATION":
+      const locationData = state.allLocations.filter(
+        (data) => data._id !== action.payload
+      );
+      return {
+        ...state,
+        allLocations: locationData,
+      };
+    case "EDIT_LOCATION":
+      return {
+        ...state,
+        dataToEdit: action.payload,
       };
 
     default:

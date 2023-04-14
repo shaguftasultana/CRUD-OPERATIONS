@@ -73,6 +73,7 @@ const AddEdit = ({ onClose }) => {
           <Grid container spacing={4}>
             <Grid item xs={3}>
               <InputLabel
+                size="small"
                 sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
               >
                 Name :
@@ -110,6 +111,7 @@ const AddEdit = ({ onClose }) => {
           <Grid container spacing={4}>
             <Grid item xs={3}>
               <InputLabel
+                size="small"
                 sx={{
                   color: "black",
                   fontWeight: "bold",
@@ -144,6 +146,7 @@ const AddEdit = ({ onClose }) => {
           <Grid container spacing={4}>
             <Grid item xs={3}>
               <InputLabel
+                size="small"
                 sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
               >
                 Price:
@@ -172,6 +175,7 @@ const AddEdit = ({ onClose }) => {
           <Grid container spacing={4}>
             <Grid item xs={3}>
               <InputLabel
+                size="small"
                 sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
               >
                 Manufactured
@@ -202,6 +206,7 @@ const AddEdit = ({ onClose }) => {
           <Grid container spacing={4}>
             <Grid item xs={3}>
               <InputLabel
+                size="small"
                 sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
               >
                 Expiry <br />
@@ -231,6 +236,7 @@ const AddEdit = ({ onClose }) => {
           <Grid container spacing={4}>
             <Grid item xs={3}>
               <InputLabel
+                size="small"
                 sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
               >
                 Product <br />
@@ -243,6 +249,7 @@ const AddEdit = ({ onClose }) => {
                   sx={{ width: "100%" }}
                   type="file"
                   name="image"
+                  size="small"
                   {...register("image")}
                 />
               </Button>
@@ -259,6 +266,7 @@ const AddEdit = ({ onClose }) => {
           <Grid container spacing={4}>
             <Grid item xs={3}>
               <InputLabel
+                size="small"
                 sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
               >
                 Category:
@@ -272,6 +280,7 @@ const AddEdit = ({ onClose }) => {
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <RadioGroup
+                    size="small"
                     row
                     value={value}
                     onChange={onChange}
@@ -309,6 +318,7 @@ const AddEdit = ({ onClose }) => {
             <Grid item xs={3}>
               <InputLabel
                 id="demo-select-small"
+                size="small"
                 sx={{ color: "black", fontWeight: "bold", textAlign: "end" }}
               >
                 Product <br /> Quantity:
@@ -318,6 +328,7 @@ const AddEdit = ({ onClose }) => {
               <Controller
                 name="dropdown"
                 control={control}
+                size="small"
                 render={({ field: { onChange, value } }) => (
                   <Select
                     color="secondary"
@@ -352,6 +363,7 @@ const AddEdit = ({ onClose }) => {
               <Controller
                 name="checkbox"
                 variant="filled"
+                size="small"
                 control={control}
                 defaultValue=""
                 render={({ field }) => (
@@ -382,21 +394,13 @@ const AddEdit = ({ onClose }) => {
             </Grid>
           </Grid>
 
-          <Box sx={{ display: "flex", justifyContent: "right" }}>
+          <Box sx={{ display: "flex", gap: 2 }}>
             <Box>
               <Button
                 type="submit"
-                variant="filled"
-                sx={{
-                  backgroundColor: "success.main",
-                  border: "2px solid black",
-                  height: "5%",
-                  margin: "10px",
-                  padding: "15px",
-                  width: "200px",
-                  fontSize: "15px",
-                  fontWeight: "bold",
-                }}
+                variant="contained"
+                color="success"
+                size="large"
               >
                 SAVE
               </Button>
@@ -404,17 +408,9 @@ const AddEdit = ({ onClose }) => {
             <Box>
               <Button
                 onClick={onClose}
-                variant="filled"
-                sx={{
-                  backgroundColor: "error.main",
-                  border: "2px solid black",
-                  height: "5%",
-                  margin: "10px",
-                  padding: "15px",
-                  width: "200px",
-                  fontSize: "15px",
-                  fontWeight: "bold",
-                }}
+                variant="contained"
+                color="error"
+                size="large"
               >
                 Cancel
               </Button>
