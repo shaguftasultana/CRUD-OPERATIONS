@@ -9,6 +9,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { MyContext } from "@/components/MyContext";
 import Location from "../SavedLocation/Location";
+import Autocomplete from "@mui/material/Autocomplete";
 
 const Map = ({ onClose }) => {
   const { state, dispatch } = useContext(MyContext);
@@ -19,7 +20,8 @@ const Map = ({ onClose }) => {
   });
   const [savedLocation, setSavedLocation] = useState({});
   const [centeredView, setCenteredView] = useState(null);
-  const [searchInputAddress, setSearchInputAddress] = useState([]);
+  const [searchInputAddress, setSearchInputAddress] = useState("");
+  const [options, setOptions] = useState([]);
 
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -34,9 +36,6 @@ const Map = ({ onClose }) => {
       center: originalView.center,
       zoom: originalView.zoom,
     });
-
-    // Clean up map when component unmounts
-    return () => map.current.remove();
   }, [originalView]);
 
   const handleEdit = async (center) => {
@@ -45,7 +44,7 @@ const Map = ({ onClose }) => {
     if (mapInstance) {
       mapInstance.flyTo({
         center: [center.lng, center.lat],
-        zoom: 3,
+        zoom: 15,
       });
       new mapboxgl.Marker()
         .setLngLat([center.lng, center.lat])
@@ -54,21 +53,53 @@ const Map = ({ onClose }) => {
       console.error("Map instance not found");
     }
   };
+  const handleSearchInputChange = async (event) => {
+    const { value } = event.target;
+    setSearchValue(value);
+    console.log(value);
+
+    if (value.length > 0) {
+      try {
+        const response = await axios.get(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${value}.json?access_token=${mapboxgl.accessToken}`
+        );
+
+        const suggestions = response.data.features.map((feature) => ({
+          label: feature.place_name,
+          longitude: feature.center[0],
+          latitude: feature.center[1],
+        }));
+        setOptions(suggestions);
+        setSearchInputAddress(value);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      setOptions([]);
+    }
+  };
 
   const handleSearch = async () => {
-    try {
-      const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchValue}.json?access_token=${mapboxgl.accessToken}`
-      );
-      const data = await response.json();
-      const [longitude, latitude] = data.features[0].center;
-      map.current.flyTo({ center: [longitude, latitude], zoom: 3 });
-      new mapboxgl.Marker().setLngLat([longitude, latitude]).addTo(map.current);
-      setSavedLocation({ address: searchValue, latitude, longitude });
-      setSearchInputAddress(searchValue);
-    } catch (error) {
-      console.error(error);
-    }
+    const { value } = event.target;
+    setSearchValue(value);
+    console.log(value);
+
+    if (value.length > 0)
+      try {
+        const response = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchValue}.json?access_token=${mapboxgl.accessToken}`
+        );
+        const data = await response.json();
+        const [longitude, latitude] = data.features[0].center;
+        map.current.flyTo({ center: [longitude, latitude], zoom: 18 });
+        new mapboxgl.Marker()
+          .setLngLat([longitude, latitude])
+          .addTo(map.current);
+        setSavedLocation({ address: searchValue, latitude, longitude });
+        setSearchValue(searchValue);
+      } catch (error) {
+        console.error(error);
+      }
   };
 
   const handleCancel = () => {
@@ -76,6 +107,7 @@ const Map = ({ onClose }) => {
     setOriginalView({ center: [15.4542, 18.7322], zoom: 1.8 });
     setSavedLocation("");
     setSearchInputAddress("");
+    console.log("Cancelled" + searchValue, searchInputAddress, savedLocation);
   };
   const handleSave = () => {
     const location = savedLocation;
@@ -114,38 +146,56 @@ const Map = ({ onClose }) => {
           <Paper
             sx={{
               marginTop: "5%",
-              marginRight: "0",
-              marginBottom: "5%",
               marginLeft: "1%",
             }}
           >
             <Grid
               container
-              sx={{ flexDirection: "column", width: "100%", height: "100vh" }}
+              sx={{ flexDirection: "column", width: "100%", height: "70vh" }}
             >
-              <Grid item sx={{ width: "100%" }} className="search-container">
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <IconButton onClick={handleSearch}>
-                        <SearchIcon />
-                      </IconButton>
-                    ),
-                    endAdornment: (
-                      <IconButton onClick={handleCancel}>
-                        <ClearIcon />
-                      </IconButton>
-                    ),
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleSearch();
+              <Grid
+                item
+                sx={{ width: "100%", marginBottom: "4px" }}
+                className="search-container"
+              >
+                <Autocomplete
+                  options={options}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(value) => {
+                    if (value) {
+                      setSearchInputAddress(value.options);
                     }
                   }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Search for a location"
+                      variant="outlined"
+                      value={searchInputAddress && searchValue}
+                      onChange={handleSearchInputChange}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleSearch();
+                        }
+                      }}
+                      InputProps={{
+                        ...params.InputProps,
+                        startAdornment: (
+                          <IconButton onClick={handleSearch}>
+                            <SearchIcon />
+                          </IconButton>
+                        ),
+                        endAdornment: (
+                          <IconButton
+                            onClick={handleCancel}
+                            sx={{ marginRight: "0%" }}
+                          >
+                            <ClearIcon />
+                          </IconButton>
+                        ),
+                      }}
+                    />
+                  )}
                 />
               </Grid>
 
@@ -157,34 +207,41 @@ const Map = ({ onClose }) => {
               ></Grid>
             </Grid>
           </Paper>
-        </Grid>
-      </Grid>
-      <Box sx={{ display: "flex", gap: 3, justifyContent: "flex-end" }}>
-        <Box>
-          <Button
-            type="submit"
-            variant="contained"
-            color="success"
-            size="large"
-            onClick={() => {
-              handleSearch();
-              handleSave();
+          <Box
+            sx={{
+              display: "flex",
+              gap: 3,
+              justifyContent: "flex-end",
+              marginTop: "6rem",
             }}
           >
-            SAVE
-          </Button>
-        </Box>
-        <Box>
-          <Button
-            onClick={onClose}
-            variant="contained"
-            color="error"
-            size="large"
-          >
-            Cancel
-          </Button>
-        </Box>
-      </Box>
+            <Box>
+              <Button
+                type="submit"
+                variant="contained"
+                color="success"
+                size="large"
+                onClick={() => {
+                  handleSearch();
+                  handleSave();
+                }}
+              >
+                SAVE
+              </Button>
+            </Box>
+            <Box>
+              <Button
+                onClick={onClose}
+                variant="contained"
+                color="error"
+                size="large"
+              >
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
     </>
   );
 };

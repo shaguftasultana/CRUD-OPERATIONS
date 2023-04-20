@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import HomePage from "@/components/HomePage/Index";
 import { Box, Button, Container, Tab, Tabs } from "@mui/material";
 import { Modal } from "@mui/material";
-import AddEdit from "@/components/AddEditModal/AddEdit";
+import AddEdit from "../components/AddEditModal/AddEdit";
 import { modalStyle } from "@/components/utilities";
 import Head from "next/head";
-import Map from "@/components/MapBox/Map";
+import Map from "../components/MapBox/Map";
+import TableData from "../components/TableData";
+import { createContext } from "react";
+import { MyContext } from "@/components/MyContext";
 
 const Index = () => {
+  const { allData, dispatch } = createContext(MyContext);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [location, setLocation] = useState("");
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleChange = (event, newValue) => setValue(newValue);
@@ -54,7 +56,7 @@ const Index = () => {
             )}
           </Box>
         </Modal>
-        <HomePage />
+        <TableData handleOpen={handleOpen} update={allData} />
       </Container>
     </div>
   );

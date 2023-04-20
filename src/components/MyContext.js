@@ -64,11 +64,6 @@ const reducer = (state, action) => {
         ...state,
         allLocations: locationData,
       };
-    case "EDIT_LOCATION":
-      return {
-        ...state,
-        dataToEdit: action.payload,
-      };
 
     default:
       return state;

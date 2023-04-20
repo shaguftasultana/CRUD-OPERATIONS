@@ -13,8 +13,7 @@ import DeleteForever from "@mui/icons-material/DeleteForever";
 import Filter from "./Filter/Filter";
 import Notifications from "./Notifications";
 
-export default function TableData({ handleYes, open }) {
-  const router = useRouter();
+export default function TableData({ handleOpen, update }) {
   const { state, dispatch } = useContext(MyContext);
   const [reset, setReset] = useState(true);
   const [filterData, setFilterData] = useState([]);
@@ -33,7 +32,6 @@ export default function TableData({ handleYes, open }) {
       type: "EDIT_DATA",
       payload: selectedRow,
     });
-    router.push("/edit");
   };
 
   const CloseNotification = () => setIsDelete(false);
@@ -141,7 +139,12 @@ export default function TableData({ handleYes, open }) {
                       aria-label="edit"
                       sx={{ color: "#4caf50" }}
                       onClick={() => {
-                        handleUpdate(row?.id);
+                        if (update === row?.id) {
+                          handleUpdate(row?.id);
+                          handleOpen();
+                        } else {
+                          console.error("not found");
+                        }
                       }}
                     >
                       <EditIcon />
