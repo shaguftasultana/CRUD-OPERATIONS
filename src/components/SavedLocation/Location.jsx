@@ -50,11 +50,21 @@ const Location = ({ handleEdit }) => {
   };
   return (
     <>
-      <Card sx={{ marginTop: "10%", height: "auto" }}>
-        <Typography textAlign="center" fontWeight="bold" fontSize={20} m={1}>
+      <Card sx={{ marginTop: "10%", height: "500px", overflowY: "scroll" }}>
+        <Typography
+          textAlign="center"
+          fontWeight="bold"
+          fontSize={20}
+          sx={{
+            position: "sticky",
+            top: 0,
+            backgroundColor: "white",
+            zIndex: 1,
+          }}
+        >
           Our Locations
         </Typography>
-        <Grid container sx={{ height: "500px", overflowY: "scroll" }}>
+        <Grid container>
           {state.allLocations.map((location) => (
             <Grid item xs={12} key={location.id}>
               <Typography variant="body1" m={1}>

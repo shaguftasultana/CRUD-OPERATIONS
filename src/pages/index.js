@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box, Button, Container, Tab, Tabs } from "@mui/material";
 import { Modal } from "@mui/material";
 import AddEdit from "../components/AddEditModal/AddEdit";
@@ -6,17 +6,20 @@ import { modalStyle } from "@/components/utilities";
 import Head from "next/head";
 import Map from "../components/MapBox/Map";
 import TableData from "../components/TableData";
-import { createContext } from "react";
-import { MyContext } from "@/components/MyContext";
 
 const Index = () => {
-  const { allData, dispatch } = createContext(MyContext);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [location, setLocation] = useState("");
+  const [formData, setFormData] = useState({}); // add state to store form data
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleChange = (event, newValue) => setValue(newValue);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    setFormData({ ...formData });
+  };
+  console.log(formData);
 
   const handleLocationChange = (newLocation) => setLocation(newLocation);
 
@@ -46,7 +49,12 @@ const Index = () => {
               <Tab label="Location" />
             </Tabs>
             {value === 0 && (
-              <AddEdit onClose={handleClose} location={location} />
+              <AddEdit
+                onClose={handleClose}
+                location={location}
+                formData={formData}
+                setFormData={(data) => setFormData(data)}
+              />
             )}
             {value === 1 && (
               <Map
@@ -56,7 +64,7 @@ const Index = () => {
             )}
           </Box>
         </Modal>
-        <TableData handleOpen={handleOpen} update={allData} />
+        <TableData handleOpen={handleOpen} />
       </Container>
     </div>
   );

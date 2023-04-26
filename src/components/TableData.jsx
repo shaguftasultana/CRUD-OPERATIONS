@@ -13,12 +13,13 @@ import DeleteForever from "@mui/icons-material/DeleteForever";
 import Filter from "./Filter/Filter";
 import Notifications from "./Notifications";
 
-export default function TableData({ handleOpen, update }) {
+export default function TableData({ handleOpen }) {
   const { state, dispatch } = useContext(MyContext);
   const [reset, setReset] = useState(true);
   const [filterData, setFilterData] = useState([]);
   const [isDelete, setIsDelete] = useState(false);
   const [isDeleteId, setIsDeleteId] = useState(null);
+  const { allData } = useContext(MyContext);
 
   const resetState = () => setReset(!reset);
 
@@ -26,12 +27,15 @@ export default function TableData({ handleOpen, update }) {
     setFilterData(state.allData);
   }, [state.allData, reset]);
 
-  const handleUpdate = (id) => {
-    const selectedRow = state.allData.find((row) => row.id === id);
+  const handleUpdate = (_id) => {
+    console.log(_id);
+    const selectedRow = state.allData.find((row) => row._id === _id);
+    console.log(selectedRow);
     dispatch({
       type: "EDIT_DATA",
       payload: selectedRow,
     });
+    handleOpen();
   };
 
   const CloseNotification = () => setIsDelete(false);
@@ -64,13 +68,14 @@ export default function TableData({ handleOpen, update }) {
             />
           </Grid>
           <Grid item xs={9} display="grid" gridTemplateColumns="1fr 1fr 1fr">
-            {filterData.length === 0 ? (
+            {filterData && filterData.length === 0 ? (
               <>
                 <Typography marginLeft="80%" ping="20%" fontSize={20}>
                   No Data Found....
                 </Typography>
               </>
             ) : (
+              filterData &&
               filterData.map((row, i) => (
                 <Card
                   key={i}
@@ -139,9 +144,12 @@ export default function TableData({ handleOpen, update }) {
                       aria-label="edit"
                       sx={{ color: "#4caf50" }}
                       onClick={() => {
-                        if (update === row?.id) {
-                          handleUpdate(row?.id);
-                          handleOpen();
+                        if (
+                          state.allData
+                            .map((data) => data._id)
+                            .includes(row._id)
+                        ) {
+                          handleUpdate(row._id);
                         } else {
                           console.error("not found");
                         }

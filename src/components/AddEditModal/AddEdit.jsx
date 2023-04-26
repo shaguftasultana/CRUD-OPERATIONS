@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Button,
   Box,
@@ -21,7 +21,7 @@ import { MyContext } from "../MyContext";
 import { Checkbox } from "@mui/material";
 import { formDataFormat } from "../utilities";
 
-const AddEdit = ({ onClose }) => {
+const AddEdit = ({ onClose, formData, setFormData }) => {
   const router = useRouter();
   const { state, dispatch } = useContext(MyContext);
 
@@ -38,7 +38,7 @@ const AddEdit = ({ onClose }) => {
         ? validationSchemaForm(true)
         : validationSchemaForm(false)
     ),
-    defaultValues: state.dataToEdit ? state.dataToEdit : {},
+    defaultValues: state.dataToEdit ? state.dataToEdit : formData,
   });
 
   const onSubmit = (value) => {
@@ -60,7 +60,13 @@ const AddEdit = ({ onClose }) => {
     }
     reset();
     onClose();
+    const newFormData = { ...formData, ...value }; // merge new form data with existing formData
+    setFormData(newFormData);
   };
+  useEffect(() => {
+    setFormData(watch()); // update formData state whenever form data changes
+  });
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>

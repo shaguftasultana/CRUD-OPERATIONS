@@ -44,7 +44,7 @@ const Map = ({ onClose }) => {
     if (mapInstance) {
       mapInstance.flyTo({
         center: [center.lng, center.lat],
-        zoom: 15,
+        zoom: 12,
       });
       new mapboxgl.Marker()
         .setLngLat([center.lng, center.lat])
@@ -91,7 +91,7 @@ const Map = ({ onClose }) => {
         );
         const data = await response.json();
         const [longitude, latitude] = data.features[0].center;
-        map.current.flyTo({ center: [longitude, latitude], zoom: 18 });
+        map.current.flyTo({ center: [longitude, latitude], zoom: 12 });
         new mapboxgl.Marker()
           .setLngLat([longitude, latitude])
           .addTo(map.current);
