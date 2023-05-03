@@ -28,15 +28,23 @@ const reducer = (state, action) => {
 
     case "UPADATE_DATA":
       const updatedData = action.payload;
-      const updatedIndex = state.allData.findIndex(
-        (data) => data.id === updatedData.id
+      const prevData = state.allData.filter(
+        (data) => data._id !== updatedData._id
       );
-      const newData = [...state.allData];
-      newData[updatedIndex] = updatedData;
+      const newData = [...prevData ,updatedData];
+
       return {
         ...state,
         allData: newData,
       };
+
+    case "ADDNEWSINGLERECORD":
+      const newD = [...state.allData, action.payload];
+      return {
+        ...state,
+        allData: newD,
+      };
+
     case "REMOVE_DATA":
       const filteredData = state.allData.filter(
         (data) => data._id !== action.payload

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Button,
   Box,
@@ -21,7 +21,7 @@ import { MyContext } from "../MyContext";
 import { Checkbox } from "@mui/material";
 import { formDataFormat } from "../utilities";
 
-const AddEdit = ({ onClose }) => {
+const AddEdit = ({ onClose, formData, setFormData }) => {
   const router = useRouter();
   const { state, dispatch } = useContext(MyContext);
 
@@ -38,7 +38,7 @@ const AddEdit = ({ onClose }) => {
         ? validationSchemaForm(true)
         : validationSchemaForm(false)
     ),
-    defaultValues: state.dataToEdit ? state.dataToEdit : {},
+    defaultValues: state.dataToEdit ? state.dataToEdit : "",
   });
 
   const onSubmit = (value) => {
@@ -55,12 +55,21 @@ const AddEdit = ({ onClose }) => {
     } else {
       const formData = formDataFormat({ ...value });
       axios.post("http://localhost:3000/api/v2", formData).then((response) => {
-        dispatch({ type: "UPADATE_DATA", payload: response.data.data });
+        dispatch({ type: "ADDNEWSINGLERECORD", payload: response.data.data });
       });
     }
     reset();
     onClose();
+    const newFormData = { ...formData, ...value }; // merge new form data with existing formData
+    setFormData(newFormData);
   };
+  useEffect(() => {
+    dispatch({
+      type: "EDIT_DATA",
+      payload: watch(),
+    });
+  }, [watch()]);
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -407,7 +416,14 @@ const AddEdit = ({ onClose }) => {
             </Box>
             <Box>
               <Button
-                onClick={onClose}
+                onClick={() => {
+                  reset();
+                  dispatch({
+                    type: "EDIT_DATA",
+                    payload: "",
+                  });
+                  onClose();
+                }}
                 variant="contained"
                 color="error"
                 size="large"
