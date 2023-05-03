@@ -23,6 +23,7 @@ const Map = ({ onClose }) => {
   const [searchInputAddress, setSearchInputAddress] = useState("");
   const [options, setOptions] = useState([]);
 
+ 
   const mapContainer = useRef(null);
   const map = useRef(null);
 
@@ -56,7 +57,6 @@ const Map = ({ onClose }) => {
   const handleSearchInputChange = async (event) => {
     const { value } = event.target;
     setSearchValue(value);
-    console.log(value);
 
     if (value.length > 0) {
       try {
@@ -82,7 +82,6 @@ const Map = ({ onClose }) => {
   const handleSearch = async () => {
     const { value } = event.target;
     setSearchValue(value);
-    console.log(value);
 
     if (value.length > 0)
       try {
@@ -91,11 +90,16 @@ const Map = ({ onClose }) => {
         );
         const data = await response.json();
         const [longitude, latitude] = data.features[0].center;
+
         map.current.flyTo({ center: [longitude, latitude], zoom: 12 });
         new mapboxgl.Marker()
           .setLngLat([longitude, latitude])
           .addTo(map.current);
-        setSavedLocation({ address: searchValue, latitude, longitude });
+        setSavedLocation({
+          address: data.features[4].place_name,
+          latitude,
+          longitude,
+        });
         setSearchValue(searchValue);
       } catch (error) {
         console.error(error);
@@ -107,7 +111,6 @@ const Map = ({ onClose }) => {
     setOriginalView({ center: [15.4542, 18.7322], zoom: 1.8 });
     setSavedLocation("");
     setSearchInputAddress("");
-    console.log("Cancelled" + searchValue, searchInputAddress, savedLocation);
   };
   const handleSave = () => {
     const location = savedLocation;
@@ -171,7 +174,6 @@ const Map = ({ onClose }) => {
                       {...params}
                       label="Search for a location"
                       variant="outlined"
-                      value={searchInputAddress && searchValue}
                       onChange={handleSearchInputChange}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {

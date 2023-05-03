@@ -19,7 +19,6 @@ const Index = () => {
     setValue(newValue);
     setFormData({ ...formData });
   };
-  console.log(formData);
 
   const handleLocationChange = (newLocation) => setLocation(newLocation);
 

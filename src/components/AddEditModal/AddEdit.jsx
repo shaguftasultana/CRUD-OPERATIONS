@@ -38,7 +38,7 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
         ? validationSchemaForm(true)
         : validationSchemaForm(false)
     ),
-    defaultValues: state.dataToEdit ? state.dataToEdit : formData,
+    defaultValues: state.dataToEdit ? state.dataToEdit : "",
   });
 
   const onSubmit = (value) => {
@@ -55,7 +55,7 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
     } else {
       const formData = formDataFormat({ ...value });
       axios.post("http://localhost:3000/api/v2", formData).then((response) => {
-        dispatch({ type: "UPADATE_DATA", payload: response.data.data });
+        dispatch({ type: "ADDNEWSINGLERECORD", payload: response.data.data });
       });
     }
     reset();
@@ -64,8 +64,11 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
     setFormData(newFormData);
   };
   useEffect(() => {
-    setFormData(watch()); // update formData state whenever form data changes
-  });
+    dispatch({
+      type: "EDIT_DATA",
+      payload: watch(),
+    });
+  }, [watch()]);
 
   return (
     <>
@@ -413,7 +416,14 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
             </Box>
             <Box>
               <Button
-                onClick={onClose}
+                onClick={() => {
+                  reset();
+                  dispatch({
+                    type: "EDIT_DATA",
+                    payload: "",
+                  });
+                  onClose();
+                }}
                 variant="contained"
                 color="error"
                 size="large"

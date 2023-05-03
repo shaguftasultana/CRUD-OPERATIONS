@@ -28,9 +28,8 @@ export default function TableData({ handleOpen }) {
   }, [state.allData, reset]);
 
   const handleUpdate = (_id) => {
-    console.log(_id);
     const selectedRow = state.allData.find((row) => row._id === _id);
-    console.log(selectedRow);
+
     dispatch({
       type: "EDIT_DATA",
       payload: selectedRow,
