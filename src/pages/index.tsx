@@ -2,10 +2,10 @@ import React, { useContext, useState } from "react";
 import { Box, Button, Container, Tab, Tabs } from "@mui/material";
 import { Modal } from "@mui/material";
 import AddEdit from "../components/AddEditModal/AddEdit";
-import { modalStyle } from "@/components/utilities";
 import Head from "next/head";
 import Map from "../components/MapBox/Map";
 import TableData from "../components/TableData";
+import { modalStyle } from "../components/utilities";
 
 const Index = () => {
   const [open, setOpen] = useState(false);
@@ -15,12 +15,12 @@ const Index = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: any, newValue: number) => {
     setValue(newValue);
     setFormData({ ...formData });
   };
 
-  const handleLocationChange = (newLocation) => setLocation(newLocation);
+  const handleLocationChange = (newLocation: any) => setLocation(newLocation);
 
   return (
     <div>
@@ -50,17 +50,11 @@ const Index = () => {
             {value === 0 && (
               <AddEdit
                 onClose={handleClose}
-                location={location}
-                formData={formData}
+                formData={formData as any}
                 setFormData={(data) => setFormData(data)}
               />
             )}
-            {value === 1 && (
-              <Map
-                onClose={handleClose}
-                onLocationChange={handleLocationChange}
-              />
-            )}
+            {value === 1 && <Map onClose={handleClose} />}
           </Box>
         </Modal>
         <TableData handleOpen={handleOpen} />

@@ -1,15 +1,15 @@
-import "@/styles/globals.css";
+import "../styles/globals.css";
 import axios from "axios";
 import { useEffect, useReducer, useState } from "react";
 import { MyContext, initialState, reducer } from "../components/MyContext";
 import { createTheme, ThemeProvider } from "@mui/material";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
-const theme = createTheme({
+const theme: any = createTheme({
   palette: {
     primary: {
-      main: "#0070f3",
+      main: "#000",
     },
     secondary: {
       main: "#dddddd",
@@ -20,13 +20,14 @@ const theme = createTheme({
     success: {
       main: "#2cc50f",
     },
-    black: {
-      main: "#000",
-    },
   },
-});
+} as any);
 
-export default function App({ Component, pageProps }) {
+type AppProps = {
+  Component: any;
+  pageProps: any;
+};
+export default function App({ Component, pageProps }: AppProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [update, setUpdate] = useState(true);
   useEffect(() => {
@@ -36,7 +37,8 @@ export default function App({ Component, pageProps }) {
 
       dispatch({ type: "ADD_DATA", payload: data.data });
     };
-    if (setUpdate) getData();
+
+    if (update) getData();
     setUpdate(true);
   }, [setUpdate]);
   return (

@@ -1,14 +1,32 @@
 import React, { createContext } from "react";
 import { array } from "yup";
 
-const initialState = {
+interface InitialStateInterface {
+  show: string;
+  allData: [];
+  allLocations: [];
+  dataToEdit?: any;
+}
+
+interface ActionInterface {
+  type: string;
+  payload: any;
+}
+
+const initialState: InitialStateInterface = {
   show: "",
   allData: [],
   allLocations: [],
 };
-const MyContext = createContext(initialState);
+const MyContext = createContext<{
+  state: InitialStateInterface;
+  dispatch: React.Dispatch<ActionInterface>;
+}>({
+  state: initialState,
+  dispatch: () => {},
+});
 
-const reducer = (state, action) => {
+const reducer = (state: InitialStateInterface, action: ActionInterface) => {
   switch (action.type) {
     case "SHOW":
       return {
@@ -29,9 +47,9 @@ const reducer = (state, action) => {
     case "UPADATE_DATA":
       const updatedData = action.payload;
       const prevData = state.allData.filter(
-        (data) => data._id !== updatedData._id
+        (data: { _id: any }) => data._id !== updatedData._id
       );
-      const newData = [...prevData ,updatedData];
+      const newData = [...prevData, updatedData];
 
       return {
         ...state,
@@ -47,7 +65,7 @@ const reducer = (state, action) => {
 
     case "REMOVE_DATA":
       const filteredData = state.allData.filter(
-        (data) => data._id !== action.payload
+        (data: { _id: any }) => data._id !== action.payload
       );
       return {
         ...state,
@@ -66,7 +84,7 @@ const reducer = (state, action) => {
 
     case "DELETE_LOCATION":
       const locationData = state.allLocations.filter(
-        (data) => data._id !== action.payload
+        (data: { _id: any }) => data._id !== action.payload
       );
       return {
         ...state,
@@ -77,4 +95,5 @@ const reducer = (state, action) => {
       return state;
   }
 };
+
 export { reducer, MyContext, initialState };

@@ -1,7 +1,7 @@
 import nc from "next-connect";
 import "../../lib/mongoDb";
 import upload from "./Multer";
-import Test from "@/pages/api/Models/Models";
+import Test from "../api/Models/Models";
 
 
 

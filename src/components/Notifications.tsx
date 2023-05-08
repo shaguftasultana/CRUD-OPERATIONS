@@ -6,7 +6,17 @@ import { Alert, Button } from "@mui/material";
 import axios from "axios";
 import Slide from "@mui/material/Slide";
 
-const Notifications = ({ open, closeNotification, id, removeId }) => {
+const Notifications = ({
+  open,
+  closeNotification,
+  id,
+  removeId,
+}: {
+  open: boolean;
+  closeNotification: () => void;
+  id: any;
+  removeId: () => void;
+}): JSX.Element => {
   const { state, dispatch } = useContext(MyContext);
   const snackbarRef = useRef(null);
   const transitionRef = useRef(null);
@@ -14,7 +24,7 @@ const Notifications = ({ open, closeNotification, id, removeId }) => {
   const closeNotificationPopup = () => {
     closeNotification();
   };
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: any) => {
     try {
       const res = await axios.delete("http://localhost:3000/api/v1", {
         data: { id: id },
@@ -32,9 +42,9 @@ const Notifications = ({ open, closeNotification, id, removeId }) => {
         open={open}
         autoHideDuration={null}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        TransitionComponent={Slide}
-        TransitionProps={{ ref: transitionRef }}
-        sx={{ backgroundColor: "white !important", marginTop: "5%" }}
+        // TransitionComponent={Slide}
+        // TransitionProps={{ ref: transitionRef }}
+        // sx={{ backgroundColor: "white !important", marginTop: "5%" }}
       >
         <Alert
           variant="filled"
