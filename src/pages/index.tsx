@@ -6,21 +6,18 @@ import Head from "next/head";
 import Map from "../components/MapBox/Map";
 import TableData from "../components/TableData";
 import { modalStyle } from "../components/utilities";
+import { FormData } from "../Interfaces";
 
 const Index = () => {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(0);
-  const [location, setLocation] = useState("");
-  const [formData, setFormData] = useState({}); // add state to store form data
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [value, setValue] = useState<number>(0);
+  const [formData, setFormData] = useState<object>({});
+  const handleOpen = (): void => setOpen(true);
+  const handleClose = (): void => setOpen(false);
   const handleChange = (event: any, newValue: number) => {
     setValue(newValue);
     setFormData({ ...formData });
   };
-
-  const handleLocationChange = (newLocation: any) => setLocation(newLocation);
 
   return (
     <div>
@@ -50,7 +47,7 @@ const Index = () => {
             {value === 0 && (
               <AddEdit
                 onClose={handleClose}
-                formData={formData as any}
+                formData={formData as FormData}
                 setFormData={(data) => setFormData(data)}
               />
             )}

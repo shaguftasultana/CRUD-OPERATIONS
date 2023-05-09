@@ -5,6 +5,7 @@ import { MyContext, initialState, reducer } from "../components/MyContext";
 import { createTheme, ThemeProvider } from "@mui/material";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { AppProps } from "../Interfaces";
 
 const theme: any = createTheme({
   palette: {
@@ -23,10 +24,7 @@ const theme: any = createTheme({
   },
 } as any);
 
-type AppProps = {
-  Component: any;
-  pageProps: any;
-};
+
 export default function App({ Component, pageProps }: AppProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [update, setUpdate] = useState(true);

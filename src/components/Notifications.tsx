@@ -19,12 +19,11 @@ const Notifications = ({
 }): JSX.Element => {
   const { state, dispatch } = useContext(MyContext);
   const snackbarRef = useRef(null);
-  const transitionRef = useRef(null);
 
   const closeNotificationPopup = () => {
     closeNotification();
   };
-  const handleDelete = async (id: any) => {
+  const handleDelete = async (id: string) => {
     try {
       const res = await axios.delete("http://localhost:3000/api/v1", {
         data: { id: id },
@@ -42,9 +41,6 @@ const Notifications = ({
         open={open}
         autoHideDuration={null}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        // TransitionComponent={Slide}
-        // TransitionProps={{ ref: transitionRef }}
-        // sx={{ backgroundColor: "white !important", marginTop: "5%" }}
       >
         <Alert
           variant="filled"

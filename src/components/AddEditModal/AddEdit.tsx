@@ -20,18 +20,7 @@ import { useRouter } from "next/router";
 import { MyContext } from "../MyContext";
 import { Checkbox } from "@mui/material";
 import { formDataFormat } from "../utilities";
-interface FormData {
-  _id?: string;
-  productname: string;
-  description: string;
-  price: number;
-  manufacturedDate: string;
-  expiryDate: string;
-  image: String;
-  category: string;
-  dropdown: number;
-  checkbox: string;
-}
+import { FormData } from "../../Interfaces";
 
 const AddEdit = ({
   onClose,
@@ -42,7 +31,6 @@ const AddEdit = ({
   formData: FormData;
   setFormData: (data: FormData) => void;
 }): JSX.Element => {
-  const router = useRouter();
   const { state, dispatch } = useContext(MyContext);
 
   const {
@@ -61,7 +49,7 @@ const AddEdit = ({
     defaultValues: state.dataToEdit ? state.dataToEdit : "",
   });
 
-  const onSubmit = (value: any) => {
+  const onSubmit = (value: FormData) => {
     if (value?._id) {
       axios
         .patch("http://localhost:3000/api/v1", { data: value })

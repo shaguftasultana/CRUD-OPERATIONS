@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { MyContext } from "./MyContext";
-import { useRouter } from "next/router";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import Card from "@mui/material/Card";
@@ -19,11 +18,10 @@ export default function TableData({
   handleOpen: () => void;
 }): JSX.Element {
   const { state, dispatch } = useContext(MyContext);
-  const [reset, setReset] = useState(true);
-  const [filterData, setFilterData] = useState([]);
-  const [isDelete, setIsDelete] = useState(false);
-  const [isDeleteId, setIsDeleteId] = useState(null);
-  // const { allData } = useContext(MyContext);
+  const [reset, setReset] = useState<boolean>(true);
+  const [filterData, setFilterData] = useState<string[] | []>([]);
+  const [isDelete, setIsDelete] = useState<boolean>(false);
+  const [isDeleteId, setIsDeleteId] = useState<string | null>(null);
 
   const resetState = () => setReset(!reset);
 

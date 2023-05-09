@@ -5,42 +5,44 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import { useState, useRef } from "react";
+import { useState, useRef, SetStateAction } from "react";
+import { Dispatch } from "react";
+import { FormData } from "../../Interfaces";
 
 export default function Filter({
   allData,
   setFilterData,
   resetState,
 }: {
-  allData: never[];
-  setFilterData: React.Dispatch<React.SetStateAction<never[]>>;
+  allData: any;
+  setFilterData: any;
   resetState: () => void;
 }): JSX.Element {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [value, setValue] = useState([0, 10000]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [value, setValue] = useState<number[]>([0, 10000]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSearch = (event: any) => {
     const value = event.target.value;
-    const data: any = allData.filter((data: any) =>
+    const data: FormData[] = allData.filter((data: FormData) =>
       data.productname.toLowerCase().includes(value.toLowerCase())
     );
     setFilterData(data);
   };
-  const handleCategoryChange = (event: any, data: any) => {
+  const handleCategoryChange = (event: any, data: number | null) => {
     setSelectedCategory(data);
     const value = event.target.value;
-    const filteredData: any = allData.filter(
-      (data: any) => data.category === value
+    const filteredData: FormData[] = allData.filter(
+      (data: FormData) => data.category === value
     );
     setFilterData(filteredData);
   };
 
-  const handleSliderChange = (event: any, newValue: any) => {
+  const handleSliderChange = (event: any, newValue: number[]) => {
     setValue(newValue);
     const [min, max] = newValue;
 
-    const filteredData: any = allData.filter((data: any) => {
+    const filteredData: FormData[] = allData.filter((data: FormData) => {
       return data.price >= min && data.price <= max;
     });
 
@@ -81,7 +83,7 @@ export default function Filter({
         <Slider
           value={value}
           valueLabelDisplay="auto"
-          onChange={handleSliderChange}
+          onChange={handleSliderChange as any}
           min={0}
           max={10000}
           size="small"

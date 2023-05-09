@@ -1,17 +1,5 @@
 import React, { createContext } from "react";
-import { array } from "yup";
-
-interface InitialStateInterface {
-  show: string;
-  allData: [];
-  allLocations: [];
-  dataToEdit?: any;
-}
-
-interface ActionInterface {
-  type: string;
-  payload: any;
-}
+import { InitialStateInterface, ActionInterface } from "../Interfaces";
 
 const initialState: InitialStateInterface = {
   show: "",
@@ -47,7 +35,7 @@ const reducer = (state: InitialStateInterface, action: ActionInterface) => {
     case "UPADATE_DATA":
       const updatedData = action.payload;
       const prevData = state.allData.filter(
-        (data: { _id: any }) => data._id !== updatedData._id
+        (data: { _id: string }) => data._id !== updatedData._id
       );
       const newData = [...prevData, updatedData];
 
@@ -65,7 +53,7 @@ const reducer = (state: InitialStateInterface, action: ActionInterface) => {
 
     case "REMOVE_DATA":
       const filteredData = state.allData.filter(
-        (data: { _id: any }) => data._id !== action.payload
+        (data: { _id: string }) => data._id !== action.payload
       );
       return {
         ...state,
@@ -84,7 +72,7 @@ const reducer = (state: InitialStateInterface, action: ActionInterface) => {
 
     case "DELETE_LOCATION":
       const locationData = state.allLocations.filter(
-        (data: { _id: any }) => data._id !== action.payload
+        (data: { _id: string }) => data._id !== action.payload
       );
       return {
         ...state,

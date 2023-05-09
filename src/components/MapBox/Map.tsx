@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ElementRef, useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import TextField from "@material-ui/core/TextField";
 import SearchIcon from "@material-ui/icons/Search";
@@ -10,18 +10,23 @@ import { useContext } from "react";
 import Location from "../SavedLocation/Location";
 import Autocomplete from "@mui/material/Autocomplete";
 import { MyContext } from "../MyContext";
+import {
+  LatLngCoordinatesType,
+  FeaturesType,
+  CoordinatesType,
+} from "../../Interfaces";
 
 const Map = ({ onClose }: { onClose: () => void }): JSX.Element => {
   const { state, dispatch } = useContext(MyContext);
-  const [searchValue, setSearchValue] = useState("");
-  const [originalView, setOriginalView] = useState({
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [originalView, setOriginalView] = useState<CoordinatesType>({
     center: [15.4542, 18.7322],
     zoom: 1.8,
   });
-  const [savedLocation, setSavedLocation] = useState({});
-  const [centeredView, setCenteredView] = useState<any>(null);
-  const [searchInputAddress, setSearchInputAddress] = useState("");
-  const [options, setOptions] = useState([]);
+  const [savedLocation, setSavedLocation] = useState<object | string>({});
+  const [centeredView, setCenteredView] = useState<number | null>(null);
+  const [searchInputAddress, setSearchInputAddress] = useState<string>("");
+  const [options, setOptions] = useState<string[] | []>([]);
 
   const mapContainer: any = useRef(null);
   const map: any = useRef(null);
@@ -38,7 +43,7 @@ const Map = ({ onClose }: { onClose: () => void }): JSX.Element => {
     });
   }, [originalView]);
 
-  const handleEdit = async (center: any) => {
+  const handleEdit = async (center: LatLngCoordinatesType) => {
     setCenteredView([center.lng, center.lat, center.address] as any);
     const mapInstance: any = map.current;
     if (mapInstance) {
@@ -63,11 +68,13 @@ const Map = ({ onClose }: { onClose: () => void }): JSX.Element => {
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${value}.json?access_token=${mapboxgl.accessToken}`
         );
 
-        const suggestions = response.data.features.map((feature: any) => ({
-          label: feature.place_name,
-          longitude: feature.center[0],
-          latitude: feature.center[1],
-        }));
+        const suggestions = response.data.features.map(
+          (feature: FeaturesType) => ({
+            label: feature.place_name,
+            longitude: feature.center[0],
+            latitude: feature.center[1],
+          })
+        );
         setOptions(suggestions);
         setSearchInputAddress(value);
       } catch (error) {

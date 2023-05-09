@@ -14,8 +14,8 @@ import { MyContext } from "../MyContext";
 
 const Location = ({ handleEdit }: { handleEdit: any }): JSX.Element => {
   const { state, dispatch } = useContext(MyContext);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteItemId, setDeleteItemId] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [deleteItemId, setDeleteItemId] = useState<any>(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -29,7 +29,7 @@ const Location = ({ handleEdit }: { handleEdit: any }): JSX.Element => {
     getData();
   }, []);
 
-  const handleDelete = async (id: any) => {
+  const handleDelete = async (id: string) => {
     try {
       const res = await axios.delete("http://localhost:3000/api/v3", {
         data: { id: id },
@@ -39,7 +39,7 @@ const Location = ({ handleEdit }: { handleEdit: any }): JSX.Element => {
     setDeleteItemId(null);
     setDeleteDialogOpen(false);
   };
-  const handleDeleteDialogOpen = (id: any) => {
+  const handleDeleteDialogOpen = (id: string) => {
     setDeleteItemId(id);
     setDeleteDialogOpen(true);
   };
