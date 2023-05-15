@@ -2,25 +2,22 @@ import React, { useContext, useState } from "react";
 import { Box, Button, Container, Tab, Tabs } from "@mui/material";
 import { Modal } from "@mui/material";
 import AddEdit from "../components/AddEditModal/AddEdit";
-import { modalStyle } from "@/components/utilities";
 import Head from "next/head";
 import Map from "../components/MapBox/Map";
 import TableData from "../components/TableData";
+import { modalStyle } from "../components/utilities";
+import { FormData } from "../Interfaces";
 
 const Index = () => {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(0);
-  const [location, setLocation] = useState("");
-  const [formData, setFormData] = useState({}); // add state to store form data
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const handleChange = (event, newValue) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const [value, setValue] = useState<number>(0);
+  const [formData, setFormData] = useState<object>({});
+  const handleOpen = (): void => setOpen(true);
+  const handleClose = (): void => setOpen(false);
+  const handleChange = (event: any, newValue: number) => {
     setValue(newValue);
     setFormData({ ...formData });
   };
-
-  const handleLocationChange = (newLocation) => setLocation(newLocation);
 
   return (
     <div>
@@ -50,17 +47,11 @@ const Index = () => {
             {value === 0 && (
               <AddEdit
                 onClose={handleClose}
-                location={location}
-                formData={formData}
+                formData={formData as FormData}
                 setFormData={(data) => setFormData(data)}
               />
             )}
-            {value === 1 && (
-              <Map
-                onClose={handleClose}
-                onLocationChange={handleLocationChange}
-              />
-            )}
+            {value === 1 && <Map onClose={handleClose} />}
           </Box>
         </Modal>
         <TableData handleOpen={handleOpen} />

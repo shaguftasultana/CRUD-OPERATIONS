@@ -1,6 +1,6 @@
 import nc from "next-connect";
 import "../../lib/mongoDb";
-import Test from "@/pages/api/Models/Models";
+import Test from "../api/Models/Models";
 
 const handler = nc();
 handler.patch(async (req, res) => {

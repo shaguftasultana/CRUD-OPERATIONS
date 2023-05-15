@@ -20,9 +20,17 @@ import { useRouter } from "next/router";
 import { MyContext } from "../MyContext";
 import { Checkbox } from "@mui/material";
 import { formDataFormat } from "../utilities";
+import { FormData } from "../../Interfaces";
 
-const AddEdit = ({ onClose, formData, setFormData }) => {
-  const router = useRouter();
+const AddEdit = ({
+  onClose,
+  formData,
+  setFormData,
+}: {
+  onClose: () => void;
+  formData: FormData;
+  setFormData: (data: FormData) => void;
+}): JSX.Element => {
   const { state, dispatch } = useContext(MyContext);
 
   const {
@@ -41,7 +49,7 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
     defaultValues: state.dataToEdit ? state.dataToEdit : "",
   });
 
-  const onSubmit = (value) => {
+  const onSubmit = (value: FormData) => {
     if (value?._id) {
       axios
         .patch("http://localhost:3000/api/v1", { data: value })
@@ -60,7 +68,7 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
     }
     reset();
     onClose();
-    const newFormData = { ...formData, ...value }; // merge new form data with existing formData
+    const newFormData = { ...formData, ...value };
     setFormData(newFormData);
   };
   useEffect(() => {
@@ -95,7 +103,6 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
                 size="small"
                 id="Name Required"
                 variant="filled"
-                name="productname"
                 {...register("productname")}
               />
             </Grid>
@@ -138,7 +145,6 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
                 multiline
                 maxRows={6}
                 variant="filled"
-                name="description"
                 {...register("description")}
               />
             </Grid>
@@ -167,7 +173,6 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
                 id="Price Required"
                 size="small"
                 variant="filled"
-                name="price"
                 {...register("price")}
               />
             </Grid>
@@ -197,7 +202,6 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
                 type="date"
                 size="small"
                 variant="filled"
-                name="manufacturedDate"
                 {...register("manufacturedDate")}
               />
             </Grid>
@@ -228,7 +232,6 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
                 type="date"
                 size="small"
                 variant="filled"
-                name="expiryDate"
                 {...register("expiryDate")}
               />
             </Grid>
@@ -253,14 +256,8 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
               </InputLabel>
             </Grid>
             <Grid item xs={9}>
-              <Button size="small" variant="filled">
-                <input
-                  sx={{ width: "100%" }}
-                  type="file"
-                  name="image"
-                  size="small"
-                  {...register("image")}
-                />
+              <Button size="small" sx={{ variant: "filled" }}>
+                <input type="file" {...register("image")} />
               </Button>
             </Grid>
             <Grid item xs={3} sx={{ m: "0%", p: "0% !important" }}>
@@ -284,16 +281,14 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
             <Grid item xs={9}>
               <Controller
                 defaultValue={""}
-                size="small"
                 name="category"
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <RadioGroup
-                    size="small"
+                    sx={{ size: "small" }}
                     row
                     value={value}
                     onChange={onChange}
-                    sx={{ paddingLeft: "20px" }}
                   >
                     <FormControlLabel
                       value="1"
@@ -337,7 +332,6 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
               <Controller
                 name="dropdown"
                 control={control}
-                size="small"
                 render={({ field: { onChange, value } }) => (
                   <Select
                     color="secondary"
@@ -371,8 +365,6 @@ const AddEdit = ({ onClose, formData, setFormData }) => {
             <Grid item xs={9}>
               <Controller
                 name="checkbox"
-                variant="filled"
-                size="small"
                 control={control}
                 defaultValue=""
                 render={({ field }) => (

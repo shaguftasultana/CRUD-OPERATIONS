@@ -12,10 +12,10 @@ import React, { useEffect, useContext, useState } from "react";
 import axios from "axios";
 import { MyContext } from "../MyContext";
 
-const Location = ({ handleEdit }) => {
+const Location = ({ handleEdit }: { handleEdit: any }): JSX.Element => {
   const { state, dispatch } = useContext(MyContext);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteItemId, setDeleteItemId] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [deleteItemId, setDeleteItemId] = useState<any>(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -29,7 +29,7 @@ const Location = ({ handleEdit }) => {
     getData();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     try {
       const res = await axios.delete("http://localhost:3000/api/v3", {
         data: { id: id },
@@ -39,7 +39,7 @@ const Location = ({ handleEdit }) => {
     setDeleteItemId(null);
     setDeleteDialogOpen(false);
   };
-  const handleDeleteDialogOpen = (id) => {
+  const handleDeleteDialogOpen = (id: string) => {
     setDeleteItemId(id);
     setDeleteDialogOpen(true);
   };
@@ -65,7 +65,7 @@ const Location = ({ handleEdit }) => {
           Our Locations
         </Typography>
         <Grid container>
-          {state.allLocations.map((location) => (
+          {state.allLocations.map((location: any) => (
             <Grid item xs={12} key={location.id}>
               <Typography variant="body1" m={1}>
                 {location.address}

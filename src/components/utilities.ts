@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
-const formDataFormat = (data, _id) => {
+
+const formDataFormat = (data: any, _id?: string) => {
   if (_id) {
     const form = new FormData();
     form.append("_id", _id);
@@ -29,7 +30,7 @@ const formDataFormat = (data, _id) => {
   }
 };
 
-function validationSchemaForm(val) {
+function validationSchemaForm(val: any) {
   if (val) {
     const validationSchema = Yup.object().shape({
       productname: Yup.string()
@@ -67,7 +68,7 @@ function validationSchemaForm(val) {
       description: Yup.string().required("Description is required"),
       image: Yup.mixed()
         .required("Please upload an image")
-        .test("fileType", "Unsupported file type", (value) => {
+        .test("fileType", "Unsupported file type", (value: any) => {
           return (
             value.length &&
             ["image/jpeg", "image/png", "image/avif"].includes(value[0].type)
@@ -97,6 +98,5 @@ const modalStyle = {
   borderRadius: "1rem",
   p: 3,
 };
- 
 
 export { validationSchemaForm, formDataFormat, modalStyle };

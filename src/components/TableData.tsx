@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { MyContext } from "./MyContext";
-import { useRouter } from "next/router";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import Card from "@mui/material/Card";
@@ -12,14 +11,18 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import Filter from "./Filter/Filter";
 import Notifications from "./Notifications";
+import { FormData } from "../Interfaces";
 
-export default function TableData({ handleOpen }) {
+export default function TableData({
+  handleOpen,
+}: {
+  handleOpen: () => void;
+}): JSX.Element {
   const { state, dispatch } = useContext(MyContext);
-  const [reset, setReset] = useState(true);
-  const [filterData, setFilterData] = useState([]);
-  const [isDelete, setIsDelete] = useState(false);
-  const [isDeleteId, setIsDeleteId] = useState(null);
-  const { allData } = useContext(MyContext);
+  const [reset, setReset] = useState<boolean>(true);
+  const [filterData, setFilterData] = useState<string[] | []>([]);
+  const [isDelete, setIsDelete] = useState<boolean>(false);
+  const [isDeleteId, setIsDeleteId] = useState<string | null>(null);
 
   const resetState = () => setReset(!reset);
 
@@ -27,8 +30,8 @@ export default function TableData({ handleOpen }) {
     setFilterData(state.allData);
   }, [state.allData, reset]);
 
-  const handleUpdate = (_id) => {
-    const selectedRow = state.allData.find((row) => row._id === _id);
+  const handleUpdate = (_id: string) => {
+    const selectedRow = state.allData.find((row: FormData) => row._id === _id);
 
     dispatch({
       type: "EDIT_DATA",
@@ -53,11 +56,13 @@ export default function TableData({ handleOpen }) {
         <Grid container sx={{ marginLeft: "5%" }}></Grid>
         <Grid
           container
-          display="flex"
-          marginLeft={2}
-          marginTop={6}
-          marginBottom={5}
-          ping={2}
+          sx={{
+            display: "flex",
+            marginLeft: 2,
+            marginTop: 6,
+            marginBottom: 5,
+            ping: 2,
+          }}
         >
           <Grid item xs={3} marginTop="5px">
             <Filter
@@ -69,13 +74,15 @@ export default function TableData({ handleOpen }) {
           <Grid item xs={9} display="grid" gridTemplateColumns="1fr 1fr 1fr">
             {filterData && filterData.length === 0 ? (
               <>
-                <Typography marginLeft="80%" ping="20%" fontSize={20}>
+                <Typography
+                  sx={{ marginLeft: "80%", ping: "20%", fontSize: 20 }}
+                >
                   No Data Found....
                 </Typography>
               </>
             ) : (
               filterData &&
-              filterData.map((row, i) => (
+              filterData.map((row: any, i) => (
                 <Card
                   key={i}
                   sx={{
@@ -145,7 +152,7 @@ export default function TableData({ handleOpen }) {
                       onClick={() => {
                         if (
                           state.allData
-                            .map((data) => data._id)
+                            .map((data: any) => data._id)
                             .includes(row._id)
                         ) {
                           handleUpdate(row._id);
