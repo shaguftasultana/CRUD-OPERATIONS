@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
 const testSchema = new Schema({
-  productname: String,
+  productName: String,
   price: String,
   expiryDate: String,
   manufacturedDate: String,
@@ -11,5 +11,5 @@ const testSchema = new Schema({
   dropdown: String,
   location: String,
 });
-const Test=models.Test || model('Test', testSchema);
-export default Test;
+const Product = models.Test || model("Product", testSchema);
+export default Product;
