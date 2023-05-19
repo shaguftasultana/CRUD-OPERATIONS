@@ -16,11 +16,12 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchemaForm } from "../utilities";
 import axios from "axios";
-import { useRouter } from "next/router";
 import { MyContext } from "../MyContext";
 import { Checkbox } from "@mui/material";
 import { formDataFormat } from "../utilities";
 import { FormData } from "../../Interfaces";
+import { useMutation } from "@apollo/client";
+import { CREATE_PRODUCT } from "../../constrain/Query";
 
 const AddEdit = ({
   onClose,
@@ -32,6 +33,7 @@ const AddEdit = ({
   setFormData: (data: FormData) => void;
 }): JSX.Element => {
   const { state, dispatch } = useContext(MyContext);
+  const [createProduct] = useMutation(CREATE_PRODUCT);
 
   const {
     register,
@@ -50,6 +52,7 @@ const AddEdit = ({
   });
 
   const onSubmit = (value: FormData) => {
+    console.log(value);
     if (value?._id) {
       axios
         .patch("http://localhost:3000/api/v1", { data: value })
@@ -61,22 +64,27 @@ const AddEdit = ({
         payload: "",
       });
     } else {
-      const formData = formDataFormat({ ...value });
-      axios.post("http://localhost:3000/api/v2", formData).then((response) => {
-        dispatch({ type: "ADDNEWSINGLERECORD", payload: response.data.data });
+      const formData = { ...value };
+      console.log(formData);
+      createProduct({ variables: { formData } }).then((response) => {
+        console.log(response);
+        dispatch({
+          type: "ADDNEWSINGLERECORD",
+          payload: response.data.createProduct,
+        });
+        const newFormData = { ...formData, ...value };
+        setFormData(newFormData);
       });
     }
     reset();
     onClose();
-    const newFormData = { ...formData, ...value };
-    setFormData(newFormData);
   };
   useEffect(() => {
     dispatch({
       type: "EDIT_DATA",
       payload: watch(),
     });
-  }, [watch()]);
+  }, [watch]);
 
   return (
     <>

@@ -28,6 +28,7 @@ export default function TableData({
 
   useEffect(() => {
     setFilterData(state.allData);
+    console.log(state.allData);
   }, [state.allData, reset]);
 
   const handleUpdate = (_id: string) => {

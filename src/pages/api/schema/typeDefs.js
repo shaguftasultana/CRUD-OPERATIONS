@@ -1,12 +1,12 @@
 import { gql } from "apollo-server";
-import Product from "../Models/Models";
+
 
 const typeDefs = gql`
   scalar ID
 
   type Product {
     _id: ID
-    productName: String
+    productname: String
     description: String
     price: Float
     manufacturedDate: String
@@ -16,9 +16,15 @@ const typeDefs = gql`
     dropdown: Int
     checkbox: String
   }
+  type Locations {
+    _id: ID
+    address: String
+    lng: Int
+    lat: Int
+  }
 
   input ProductInput {
-    productName: String
+    productname: String
     description: String
     price: Float
     manufacturedDate: String
@@ -27,13 +33,22 @@ const typeDefs = gql`
     category: String
     dropdown: Int
     checkbox: String
+  }
+  input LocationInput {
+    address: String
+    lng: Int
+    lat: Int
   }
 
   type Query {
     products: [Product]
+    locations: [Locations]
   }
 
   type Mutation {
+    createLocation(input: LocationInput): Locations
+    deleteLocation(id: ID): Boolean
+    updateLocation(id: ID, input: LocationInput): Locations
     createProduct(input: ProductInput): Product
     deleteProduct(id: ID): Boolean
     updateProduct(id: ID, input: ProductInput): Product

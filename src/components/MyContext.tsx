@@ -1,5 +1,6 @@
 import React, { createContext } from "react";
 import { InitialStateInterface, ActionInterface } from "../Interfaces";
+import { ApolloClient } from "@apollo/client";
 
 const initialState: InitialStateInterface = {
   show: "",
@@ -45,7 +46,7 @@ const reducer = (state: InitialStateInterface, action: ActionInterface) => {
       };
 
     case "ADDNEWSINGLERECORD":
-      const newD = [...state.allData, action.payload];
+      const newD = [state.allData, action.payload];
       return {
         ...state,
         allData: newD,

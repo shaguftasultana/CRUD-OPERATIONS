@@ -7,8 +7,13 @@ import Map from "../components/MapBox/Map";
 import TableData from "../components/TableData";
 import { modalStyle } from "../components/utilities";
 import { FormData } from "../Interfaces";
+import { useQuery, gql } from "@apollo/client";
+import { PRODUCT_DATA } from "../constrain/Query";
+import { useEffect } from "react";
+import { MyContext } from "../components/MyContext";
 
 const Index = () => {
+  const { state, dispatch } = useContext(MyContext);
   const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0);
   const [formData, setFormData] = useState<object>({});
@@ -18,6 +23,18 @@ const Index = () => {
     setValue(newValue);
     setFormData({ ...formData });
   };
+  const { data, loading, error } = useQuery(PRODUCT_DATA);
+
+  if (data) {
+    console.log(data);
+  } else {
+    console.log("no data");
+  }
+  useEffect(() => {
+    if (!loading && !error && data) {
+      dispatch({ type: "ADD_DATA", payload: data.products });
+    }
+  }, [loading, error, data]);
 
   return (
     <div>
