@@ -11,7 +11,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import Filter from "./Filter/Filter";
 import Notifications from "./Notifications";
-import { FormData } from "../Interfaces";
+import { FormDataInterface } from "../Interfaces";
 
 export default function TableData({
   handleOpen,
@@ -32,7 +32,9 @@ export default function TableData({
   }, [state.allData, reset]);
 
   const handleUpdate = (_id: string) => {
-    const selectedRow = state.allData.find((row: FormData) => row._id === _id);
+    const selectedRow = state.allData.find(
+      (row: FormDataInterface) => row._id === _id
+    );
 
     dispatch({
       type: "EDIT_DATA",

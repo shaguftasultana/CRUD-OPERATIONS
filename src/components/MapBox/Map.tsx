@@ -15,9 +15,11 @@ import {
   FeaturesType,
   CoordinatesType,
 } from "../../Interfaces";
+import { CREATE_LOCATION } from "../../constrain/Query";
+import { useMutation } from "@apollo/client";
 
 const Map = ({ onClose }: { onClose: () => void }): JSX.Element => {
-  const { state, dispatch } = useContext(MyContext);
+  const { dispatch } = useContext(MyContext);
   const [searchValue, setSearchValue] = useState<string>("");
   const [originalView, setOriginalView] = useState<CoordinatesType>({
     center: [15.4542, 18.7322],
@@ -27,6 +29,7 @@ const Map = ({ onClose }: { onClose: () => void }): JSX.Element => {
   const [centeredView, setCenteredView] = useState<number | null>(null);
   const [searchInputAddress, setSearchInputAddress] = useState<string>("");
   const [options, setOptions] = useState<string[] | []>([]);
+  const [createLocation] = useMutation(CREATE_LOCATION);
 
   const mapContainer: any = useRef(null);
   const map: any = useRef(null);
@@ -117,8 +120,9 @@ const Map = ({ onClose }: { onClose: () => void }): JSX.Element => {
     setSavedLocation("");
     setSearchInputAddress("");
   };
-  const handleSave = () => {
+  const handleSave = async () => {
     const location: any = savedLocation;
+    console.log(location);
     if (
       location &&
       location.address &&
@@ -130,14 +134,23 @@ const Map = ({ onClose }: { onClose: () => void }): JSX.Element => {
         lng: location.longitude,
         lat: location.latitude,
       };
+      console.log(data);
+      try {
+        const response = await createLocation({
+          variables: {
+            input: data,
+          },
+        });
 
-      axios.post("http://localhost:3000/api/v3", data).then((response) => {
-        dispatch({ type: "UPDATE_LOCATION", payload: response.data.data });
+        dispatch({
+          type: "UPDATE_LOCATION",
+          payload: response.data.createLocation,
+        });
         setSavedLocation("");
         setSearchInputAddress("");
-      });
-    } else {
-      console.error("Location not found");
+      } catch {
+        console.error("Location not found");
+      }
     }
   };
 

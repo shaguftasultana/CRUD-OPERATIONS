@@ -1,4 +1,4 @@
-interface FormData {
+interface FormDataInterface {
   _id?: string;
   productname: string;
   description: string;
@@ -40,7 +40,7 @@ interface AppProps {
 }
 
 export type {
-  FormData,
+  FormDataInterface,
   InitialStateInterface,
   ActionInterface,
   CoordinatesType,

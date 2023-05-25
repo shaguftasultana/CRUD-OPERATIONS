@@ -1,31 +1,44 @@
 import * as Yup from "yup";
+import { FormDataInterface } from "../Interfaces";
 
+export const FormDataIntoString = (data: FormDataInterface): any => {
+  return {
+    productname: data.productname,
+    price: JSON.stringify(data.price),
+    description: data.description,
+    manufacturedDate: data.manufacturedDate,
+    expiryDate: data.expiryDate,
+    category: data.category,
+    checkbox: JSON.stringify(data.checkbox),
+    dropdown: JSON.stringify(data.dropdown),
+  };
+};
 
-const formDataFormat = (data: any, _id?: string) => {
+const formDataFormat = (data: FormDataInterface, _id?: string) => {
   if (_id) {
     const form = new FormData();
     form.append("_id", _id);
     form.append("productname", data.productname);
-    form.append("price", data.price);
+    form.append("price", JSON.stringify(data.price));
     form.append("description", data.description);
     form.append("manufacturedDate", data.manufacturedDate);
     form.append("expiryDate", data.expiryDate);
     form.append("category", data.category);
     form.append("checkbox", data.checkbox);
     form.append("image", data.image[0]);
-    form.append("dropdown", data.dropdown);
+    form.append("dropdown", JSON.stringify(data.dropdown));
     return form;
   } else {
     const form = new FormData();
     form.append("productname", data.productname);
-    form.append("price", data.price);
+    form.append("price", JSON.stringify(data.price));
     form.append("description", data.description);
     form.append("manufacturedDate", data.manufacturedDate);
     form.append("expiryDate", data.expiryDate);
     form.append("category", data.category);
     form.append("checkbox", data.checkbox);
     form.append("image", data.image[0]);
-    form.append("dropdown", data.dropdown);
+    form.append("dropdown", JSON.stringify(data.dropdown));
     return form;
   }
 };

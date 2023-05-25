@@ -14,19 +14,21 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { validationSchemaForm } from "../utilities";
-import axios from "axios";
+import {
+  validationSchemaForm,
+  formDataFormat,
+  FormDataIntoString,
+} from "../utilities";
 import { MyContext } from "../MyContext";
 import { Checkbox } from "@mui/material";
-import { formDataFormat } from "../utilities";
-import { FormData } from "../../Interfaces";
+import { FormDataInterface } from "../../Interfaces";
 import { useMutation } from "@apollo/client";
-import { CREATE_PRODUCT } from "../../constrain/Query";
+import { CREATE_PRODUCT, UPDATE_ITEM_MUTATION } from "../../constrain/Query";
 
 const AddEdit = ({
   onClose,
-  formData,
   setFormData,
+  formData,
 }: {
   onClose: () => void;
   formData: FormData;
@@ -34,6 +36,7 @@ const AddEdit = ({
 }): JSX.Element => {
   const { state, dispatch } = useContext(MyContext);
   const [createProduct] = useMutation(CREATE_PRODUCT);
+  const [updateProduct, { loading, error }] = useMutation(UPDATE_ITEM_MUTATION);
 
   const {
     register,
@@ -51,34 +54,53 @@ const AddEdit = ({
     defaultValues: state.dataToEdit ? state.dataToEdit : "",
   });
 
-  const onSubmit = (value: FormData) => {
+  const onSubmit = async (value: FormDataInterface) => {
     console.log(value);
+
     if (value?._id) {
-      axios
-        .patch("http://localhost:3000/api/v1", { data: value })
-        .then((response) => {
-          dispatch({ type: "UPADATE_DATA", payload: response.data.data });
+      try {
+        const data = FormDataIntoString(value);
+        const response = await updateProduct({
+          variables: { id: value._id, input: data },
         });
-      dispatch({
-        type: "EDIT_DATA",
-        payload: "",
-      });
+
+        dispatch({
+          type: "UPADATE_DATA",
+          payload: response.data.updateProduct,
+        });
+        dispatch({ type: "EDIT_DATA", payload: "" });
+      } catch (error) {
+        console.error(error);
+      }
     } else {
-      const formData = { ...value };
-      console.log(formData);
-      createProduct({ variables: { formData } }).then((response) => {
-        console.log(response);
+      const data = FormDataIntoString(value);
+      let response;
+
+      console.log(data);
+
+      try {
+        response = await createProduct({
+          variables: {
+            input: data,
+          },
+        });
+
         dispatch({
           type: "ADDNEWSINGLERECORD",
           payload: response.data.createProduct,
         });
-        const newFormData = { ...formData, ...value };
-        setFormData(newFormData);
-      });
+      } catch (err) {
+        console.log(err);
+      }
+
+      const newFormData = { ...formData, ...value };
+      setFormData(newFormData);
     }
+
     reset();
     onClose();
   };
+
   useEffect(() => {
     dispatch({
       type: "EDIT_DATA",
@@ -109,7 +131,6 @@ const AddEdit = ({
               <TextField
                 sx={{ width: "100%" }}
                 size="small"
-                id="Name Required"
                 variant="filled"
                 {...register("productname")}
               />

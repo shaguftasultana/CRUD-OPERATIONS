@@ -24,13 +24,14 @@ const theme: any = createTheme({
   },
 } as any);
 
-export default function App({ Component, pageProps }: AppProps) {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
   const client = new ApolloClient({
     cache: new InMemoryCache(),
     uri: "/api/graphql",
   });
+
+
+export default function App({ Component, pageProps }: AppProps) {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
     <ApolloProvider client={client}>

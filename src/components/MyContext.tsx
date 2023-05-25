@@ -1,6 +1,6 @@
 import React, { createContext } from "react";
 import { InitialStateInterface, ActionInterface } from "../Interfaces";
-import { ApolloClient } from "@apollo/client";
+
 
 const initialState: InitialStateInterface = {
   show: "",

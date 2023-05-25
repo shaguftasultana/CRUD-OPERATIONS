@@ -8,37 +8,28 @@ import {
   DialogTitle,
   DialogActions,
 } from "@mui/material";
-import React, { useEffect, useContext, useState } from "react";
-import axios from "axios";
+import React, { useContext, useState } from "react";
 import { MyContext } from "../MyContext";
+import { useLocationFetching } from "../../constrain/dataFetcherHook";
+import { DELETE_LOCATION_MUTATION } from "../../constrain/Query";
+import { useMutation } from "@apollo/client";
 
 const Location = ({ handleEdit }: { handleEdit: any }): JSX.Element => {
+  useLocationFetching();
   const { state, dispatch } = useContext(MyContext);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [deleteItemId, setDeleteItemId] = useState<any>(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const res = await axios.get("http://localhost:3000/api/v3");
-      const { data } = res;
-      dispatch({
-        type: "ADD_LOCATION",
-        payload: data.data,
-      });
-    };
-    getData();
-  }, []);
+  const [deleteLocation] = useMutation(DELETE_LOCATION_MUTATION);
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await axios.delete("http://localhost:3000/api/v3", {
-        data: { id: id },
-      });
+      await deleteLocation({ variables: { _id: id } });
       dispatch({ type: "DELETE_LOCATION", payload: id });
     } catch (error) {}
     setDeleteItemId(null);
     setDeleteDialogOpen(false);
   };
+
   const handleDeleteDialogOpen = (id: string) => {
     setDeleteItemId(id);
     setDeleteDialogOpen(true);

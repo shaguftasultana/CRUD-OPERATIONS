@@ -1,19 +1,17 @@
 import { gql } from "apollo-server";
 
-
 const typeDefs = gql`
   scalar ID
-
   type Product {
     _id: ID
     productname: String
     description: String
-    price: Float
+    price: String
     manufacturedDate: String
     expiryDate: String
     image: String
     category: String
-    dropdown: Int
+    dropdown: String
     checkbox: String
   }
   type Locations {
@@ -26,12 +24,12 @@ const typeDefs = gql`
   input ProductInput {
     productname: String
     description: String
-    price: Float
+    price: String
     manufacturedDate: String
     expiryDate: String
     image: String
     category: String
-    dropdown: Int
+    dropdown: String
     checkbox: String
   }
   input LocationInput {

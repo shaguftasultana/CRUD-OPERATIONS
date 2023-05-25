@@ -4,7 +4,8 @@ import { useContext } from "react";
 import { MyContext } from "./MyContext";
 import { Alert, Button } from "@mui/material";
 import axios from "axios";
-import Slide from "@mui/material/Slide";
+import { useMutation } from "@apollo/client";
+import { DELETE_ITEM_MUTATION } from "../constrain/Query";
 
 const Notifications = ({
   open,
@@ -19,19 +20,20 @@ const Notifications = ({
 }): JSX.Element => {
   const { state, dispatch } = useContext(MyContext);
   const snackbarRef = useRef(null);
+  const [deleteItem] = useMutation(DELETE_ITEM_MUTATION);
 
   const closeNotificationPopup = () => {
     closeNotification();
   };
   const handleDelete = async (id: string) => {
     try {
-      const res = await axios.delete("http://localhost:3000/api/v1", {
-        data: { id: id },
-      });
+      const { data } = await deleteItem({ variables: { _id: id } });
       dispatch({ type: "REMOVE_DATA", payload: id });
       removeId();
       closeNotification();
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
   };
 
   return (

@@ -1,6 +1,7 @@
 import Product from "../Models/Models";
 import Location from "../Models/LocationModel";
-
+import { storeUpload } from "./imageMiddleware";
+// import { GraphQLUpload } from "apollo-server-express";
 const resolvers = {
   Query: {
     async products() {
@@ -27,6 +28,7 @@ const resolvers = {
       const { input } = args;
       try {
         const newLocation = await Location.create(input);
+        console.log(newLocation);
 
         return newLocation;
       } catch (error) {
@@ -35,16 +37,37 @@ const resolvers = {
     },
     createProduct: async (parent, args) => {
       console.log(args);
+
       const { input } = args;
 
       try {
         const newProduct = await Product.create(input);
-        console.log(newProduct, "create");
         return newProduct;
       } catch (error) {
         throw new Error("Error creating a new product");
       }
     },
+    // createProduct: async (parent, args) => {
+    //   const { input } = args;
+    //   console.log(args);
+
+    //   try {
+    //     // Assuming 'image' field represents the uploaded image
+    //     const { image, ...productData } = input;
+
+    //     if (image) {
+    //       const uploadedImage = await storeUpload(image);
+    //       productData.image = uploadedImage;
+    //     }
+
+    //     const newProduct = await Product.create(productData);
+
+    //     return newProduct;
+    //   } catch (error) {
+    //     console.log(error);
+    //     throw new Error("Error creating a new product");
+    //   }
+    // },
     deleteProduct: async (parent, args) => {
       const { id } = args;
       try {
@@ -87,5 +110,6 @@ const resolvers = {
       }
     },
   },
+  // Upload: GraphQLUpload,
 };
 export default resolvers;
