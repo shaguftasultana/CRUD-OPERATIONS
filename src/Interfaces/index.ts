@@ -2,12 +2,12 @@ interface FormDataInterface {
   _id?: string;
   productname: string;
   description: string;
-  price: number;
+  price: string;
   manufacturedDate: string;
   expiryDate: string;
   image: string;
   category: string;
-  dropdown: number;
+  dropdown: string;
   checkbox: string;
 }
 interface InitialStateInterface {

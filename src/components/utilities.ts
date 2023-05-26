@@ -3,6 +3,7 @@ import { FormDataInterface } from "../Interfaces";
 
 export const FormDataIntoString = (data: FormDataInterface): any => {
   return {
+    _id: data._id,
     productname: data.productname,
     price: JSON.stringify(data.price),
     description: data.description,
@@ -19,26 +20,25 @@ const formDataFormat = (data: FormDataInterface, _id?: string) => {
     const form = new FormData();
     form.append("_id", _id);
     form.append("productname", data.productname);
-    form.append("price", JSON.stringify(data.price));
+    form.append("price", data.price);
     form.append("description", data.description);
     form.append("manufacturedDate", data.manufacturedDate);
     form.append("expiryDate", data.expiryDate);
     form.append("category", data.category);
     form.append("checkbox", data.checkbox);
-    form.append("image", data.image[0]);
-    form.append("dropdown", JSON.stringify(data.dropdown));
+    form.append("dropdown", data.dropdown);
+
     return form;
   } else {
     const form = new FormData();
     form.append("productname", data.productname);
-    form.append("price", JSON.stringify(data.price));
+    form.append("price", data.price);
     form.append("description", data.description);
     form.append("manufacturedDate", data.manufacturedDate);
     form.append("expiryDate", data.expiryDate);
     form.append("category", data.category);
     form.append("checkbox", data.checkbox);
-    form.append("image", data.image[0]);
-    form.append("dropdown", JSON.stringify(data.dropdown));
+    form.append("dropdown", data.dropdown);
     return form;
   }
 };

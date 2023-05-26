@@ -131,8 +131,8 @@ const Map = ({ onClose }: { onClose: () => void }): JSX.Element => {
     ) {
       const data = {
         address: location.address,
-        lng: location.longitude,
-        lat: location.latitude,
+        lng: parseInt(location.longitude), // Convert to int
+        lat: parseInt(location.latitude), // Convert to int
       };
       console.log(data);
       try {
