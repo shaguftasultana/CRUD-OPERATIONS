@@ -1,7 +1,10 @@
 import * as Yup from "yup";
 import { FormDataInterface } from "../Interfaces";
 
-export const FormDataIntoString = (data: FormDataInterface): any => {
+export const FormDataIntoString = (
+  data: FormDataInterface,
+  _id?: string
+): any => {
   return {
     _id: data._id,
     productname: data.productname,
@@ -18,30 +21,19 @@ export const FormDataIntoString = (data: FormDataInterface): any => {
 const formDataFormat = (data: FormDataInterface, _id?: string) => {
   if (_id) {
     const form = new FormData();
-    form.append("_id", _id);
+    form.append("id", _id);
     form.append("productname", data.productname);
-    form.append("price", data.price);
+    form.append("price", JSON.stringify(data.price));
     form.append("description", data.description);
     form.append("manufacturedDate", data.manufacturedDate);
     form.append("expiryDate", data.expiryDate);
     form.append("category", data.category);
-    form.append("checkbox", data.checkbox);
-    form.append("dropdown", data.dropdown);
-
-    return form;
-  } else {
-    const form = new FormData();
-    form.append("productname", data.productname);
-    form.append("price", data.price);
-    form.append("description", data.description);
-    form.append("manufacturedDate", data.manufacturedDate);
-    form.append("expiryDate", data.expiryDate);
-    form.append("category", data.category);
-    form.append("checkbox", data.checkbox);
-    form.append("dropdown", data.dropdown);
+    form.append("checkbox", JSON.stringify(data.checkbox));
+    form.append("dropdown", JSON.stringify(data.dropdown));
     return form;
   }
 };
+
 
 function validationSchemaForm(val: any) {
   if (val) {

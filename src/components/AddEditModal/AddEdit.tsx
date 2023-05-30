@@ -60,9 +60,11 @@ const AddEdit = ({
     if (value?._id) {
       try {
         const data = FormDataIntoString(value);
+        console.log(data);
         const response = await updateProduct({
           variables: { id: value._id, input: data },
         });
+       
 
         dispatch({
           type: "UPADATE_DATA",

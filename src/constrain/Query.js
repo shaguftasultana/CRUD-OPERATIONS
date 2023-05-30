@@ -65,7 +65,17 @@ const DELETE_LOCATION_MUTATION = gql`
 
 const UPDATE_ITEM_MUTATION = gql`
   mutation updateProduct($_id: ID!, $input: ProductInput!) {
-    updateProduct(id: $_id, input: $input)
+    updateProduct(id: $_id, input: $input) {
+      _id
+      productname
+      price
+      description
+      manufacturedDate
+      expiryDate
+      category
+      checkbox
+      dropdown
+    }
   }
 `;
 

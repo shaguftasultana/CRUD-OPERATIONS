@@ -78,7 +78,9 @@ const resolvers = {
       }
     },
     updateProduct: async (parent, args) => {
-      const { id, input } = args;
+      console.log(args);
+      const { _id, input } = args;
+
       try {
         const updatedProduct = await Product.findByIdAndUpdate(id, input, {
           new: true,
