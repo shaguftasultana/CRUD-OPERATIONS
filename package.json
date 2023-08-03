@@ -38,11 +38,12 @@
     "react-hook-form": "^7.43.5",
     "react-router-dom": "^6.8.2",
     "xss-clean": "^0.1.1",
-    "yup": "^1.0.2"
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
     "@babel/plugin-transform-modules-commonjs": "^7.21.2",
-    "@babel/preset-env": "^7.21.4"
+    "@babel/preset-env": "^7.21.4",
+    "typescript": "5.1.6"
   }
 }
